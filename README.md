@@ -25,4 +25,4 @@ TODO
 
 ## Meaning of the library name
 
-``squareball`` name is a tribute to *Quico*, that was *Carlos Villagrán*'s caracter in the Mexican television sitcom *El Chavo del Ocho*. Unfortunately *Quico* never got his promised square ball. :-(
+``squareball`` name is a tribute to *Quico*, that was *Carlos Villagrán*'s character in the Mexican television sitcom *El Chavo del Ocho*. Unfortunately *Quico* never got his promised square ball. :-(
