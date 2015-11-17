@@ -1,0 +1,46 @@
+# Object files
+*.o
+*.ko
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Autotools
+Makefile
+Makefile.in
+.deps
+.libs
+*.la
+*.lo
+/aclocal.m4
+/configure
+/config.*
+/autom4te.cache
+/libtool
+/stamp-h1
+.dirstamp
+/build-aux/*
+/squareball.pc
+
+# installed .m4 files
+/m4/*.m4
+
+# tests
+/tests/check_slist
+/tests/check_strings
+/tests/check_trie
+
+# tarballs
+squareball-*.tar.*
