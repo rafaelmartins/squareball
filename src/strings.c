@@ -92,7 +92,7 @@ sb_str_starts_with(const char *str, const char *prefix)
 
 
 bool
-sb_str_endsb_with(const char *str, const char *suffix)
+sb_str_ends_with(const char *str, const char *suffix)
 {
     int str_l = strlen(str);
     int str_ls = strlen(suffix);

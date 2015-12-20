@@ -68,13 +68,13 @@ test_str_starts_with(void **state)
 
 
 static void
-test_str_endsb_with(void **state)
+test_str_ends_with(void **state)
 {
-    assert_true(sb_str_endsb_with("bolaguda", "guda"));
-    assert_true(sb_str_endsb_with("bola", "bola"));
-    assert_false(sb_str_endsb_with("gudabola", "guda"));
-    assert_false(sb_str_endsb_with("guda", "bola"));
-    assert_false(sb_str_endsb_with("bola", "gudabola"));
+    assert_true(sb_str_ends_with("bolaguda", "guda"));
+    assert_true(sb_str_ends_with("bola", "bola"));
+    assert_false(sb_str_ends_with("gudabola", "guda"));
+    assert_false(sb_str_ends_with("guda", "bola"));
+    assert_false(sb_str_ends_with("bola", "gudabola"));
 }
 
 
@@ -367,7 +367,7 @@ main(void)
         unit_test(test_strndup),
         unit_test(test_strdup_printf),
         unit_test(test_str_starts_with),
-        unit_test(test_str_endsb_with),
+        unit_test(test_str_ends_with),
         unit_test(test_str_strip),
         unit_test(test_str_split),
         unit_test(test_str_replace),
