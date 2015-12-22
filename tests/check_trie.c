@@ -13,7 +13,9 @@
 
 #include <stdlib.h>
 
-#include "../src/squareball.h"
+#include <squareball/sb-trie.h>
+#include <squareball/sb-trie-private.h>
+#include <squareball/sb-string.h>
 
 
 static void

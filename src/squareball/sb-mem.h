@@ -6,12 +6,14 @@
  * See the file LICENSE.
  */
 
-#ifndef _SQUAREBALL_H
-#define _SQUAREBALL_H
+#ifndef _SQUAREBALL_MEM_H
+#define _SQUAREBALL_MEM_H
 
-#include <squareball/sb-mem.h>
-#include <squareball/sb-slist.h>
-#include <squareball/sb-string.h>
-#include <squareball/sb-trie.h>
+#include <stddef.h>
 
-#endif /* _SQUAREBALL_H */
+typedef void (*sb_free_func_t) (void *ptr);
+
+void* sb_malloc(size_t size);
+void* sb_realloc(void *ptr, size_t size);
+
+#endif /* _SQUAREBALL_MEM_H */

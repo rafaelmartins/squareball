@@ -6,12 +6,15 @@
  * See the file LICENSE.
  */
 
-#ifndef _SQUAREBALL_H
-#define _SQUAREBALL_H
+#ifndef _SQUAREBALL_STRING_PRIVATE_H
+#define _SQUAREBALL_STRING_PRIVATE_H
 
-#include <squareball/sb-mem.h>
-#include <squareball/sb-slist.h>
-#include <squareball/sb-string.h>
-#include <squareball/sb-trie.h>
+#include <stddef.h>
 
-#endif /* _SQUAREBALL_H */
+struct _sb_string_t {
+    char *str;
+    size_t len;
+    size_t allocated_len;
+};
+
+#endif /* _SQUAREBALL_STRING_PRIVATE_H */

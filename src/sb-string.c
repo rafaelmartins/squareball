@@ -16,7 +16,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "squareball.h"
+#include <squareball/sb-mem.h>
+#include <squareball/sb-string.h>
+#include <squareball/sb-string-private.h>
 
 
 char*
@@ -226,6 +228,14 @@ sb_string_free(sb_string_t *str, bool free_str)
         rv = str->str;
     free(str);
     return rv;
+}
+
+
+sb_string_t*
+sb_string_dup(sb_string_t *str)
+{
+    sb_string_t* new = sb_string_new();
+    return sb_string_append_len(new, str->str, str->len);
 }
 
 

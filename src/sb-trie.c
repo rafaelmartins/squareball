@@ -11,7 +11,10 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <stdlib.h>
-#include "squareball.h"
+#include <squareball/sb-mem.h>
+#include <squareball/sb-string.h>
+#include <squareball/sb-trie.h>
+#include <squareball/sb-trie-private.h>
 
 
 sb_trie_t*
@@ -169,13 +172,13 @@ sb_trie_foreach_node(sb_trie_node_t *node, sb_string_t *str, void (*func)(const 
         return;
 
     if (node->key == '\0') {
-        func(str->str, node->data);
-        sb_string_free(str, true);
+        char *tmp = sb_string_free(str, false);
+        func(tmp, node->data);
+        free(tmp);
     }
 
     if (node->child != NULL) {
-        sb_string_t *child = sb_string_new();
-        child = sb_string_append(child, str->str);
+        sb_string_t *child = sb_string_dup(str);
         child = sb_string_append_c(child, node->key);
         sb_trie_foreach_node(node->child, child, func);
     }

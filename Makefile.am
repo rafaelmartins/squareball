@@ -21,6 +21,19 @@ include_HEADERS = \
 	src/squareball.h \
 	$(NULL)
 
+pkginclude_HEADERS = \
+	src/squareball/sb-mem.h \
+	src/squareball/sb-slist.h \
+	src/squareball/sb-string.h \
+	src/squareball/sb-trie.h \
+	$(NULL)
+
+noinst_HEADERS = \
+	src/squareball/sb-slist-private.h \
+	src/squareball/sb-string-private.h \
+	src/squareball/sb-trie-private.h \
+	$(NULL)
+
 lib_LTLIBRARIES = \
 	libsquareball.la \
 	$(NULL)
@@ -30,10 +43,10 @@ check_PROGRAMS = \
 
 
 libsquareball_la_SOURCES = \
-	src/mem.c \
-	src/slist.c \
-	src/strings.c \
-	src/trie.c \
+	src/sb-mem.c \
+	src/sb-slist.c \
+	src/sb-string.c \
+	src/sb-trie.c \
 	$(NULL)
 
 libsquareball_la_CFLAGS = \
@@ -55,7 +68,7 @@ if USE_CMOCKA
 
 check_PROGRAMS += \
 	tests/check_slist \
-	tests/check_strings \
+	tests/check_string \
 	tests/check_trie \
 	$(NULL)
 
@@ -65,6 +78,7 @@ tests_check_slist_SOURCES = \
 
 tests_check_slist_CFLAGS = \
 	$(CMOCKA_CFLAGS) \
+	-I$(top_srcdir)/src \
 	$(NULL)
 
 tests_check_slist_LDFLAGS = \
@@ -76,19 +90,20 @@ tests_check_slist_LDADD = \
 	libsquareball.la \
 	$(NULL)
 
-tests_check_strings_SOURCES = \
-	tests/check_strings.c \
+tests_check_string_SOURCES = \
+	tests/check_string.c \
 	$(NULL)
 
-tests_check_strings_CFLAGS = \
+tests_check_string_CFLAGS = \
 	$(CMOCKA_CFLAGS) \
+	-I$(top_srcdir)/src \
 	$(NULL)
 
-tests_check_strings_LDFLAGS = \
+tests_check_string_LDFLAGS = \
 	-no-install \
 	$(NULL)
 
-tests_check_strings_LDADD = \
+tests_check_string_LDADD = \
 	$(CMOCKA_LIBS) \
 	libsquareball.la \
 	$(NULL)
@@ -99,6 +114,7 @@ tests_check_trie_SOURCES = \
 
 tests_check_trie_CFLAGS = \
 	$(CMOCKA_CFLAGS) \
+	-I$(top_srcdir)/src \
 	$(NULL)
 
 tests_check_trie_LDFLAGS = \

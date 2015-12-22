@@ -13,7 +13,8 @@
 
 #include <stdlib.h>
 
-#include "../src/squareball.h"
+#include <squareball/sb-string.h>
+#include <squareball/sb-string-private.h>
 
 
 static void
@@ -177,6 +178,24 @@ test_string_free(void **state)
     char *tmp = sb_string_free(str, false);
     assert_string_equal(tmp, "bola");
     free(tmp);
+}
+
+
+static void
+test_string_dup(void **state)
+{
+    sb_string_t *str = sb_string_new();
+    free(str->str);
+    str->str = sb_strdup("bola");
+    str->len = 4;
+    str->allocated_len = SB_STRING_CHUNK_SIZE;
+    sb_string_t *new = sb_string_dup(str);
+    assert_non_null(new);
+    assert_string_equal(new->str, "bola");
+    assert_int_equal(new->len, 4);
+    assert_int_equal(new->allocated_len, SB_STRING_CHUNK_SIZE);
+    assert_null(sb_string_free(new, true));
+    assert_null(sb_string_free(str, true));
 }
 
 
@@ -375,6 +394,7 @@ main(void)
         unit_test(test_strv_length),
         unit_test(test_string_new),
         unit_test(test_string_free),
+        unit_test(test_string_dup),
         unit_test(test_string_append_len),
         unit_test(test_string_append),
         unit_test(test_string_append_c),

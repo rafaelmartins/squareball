@@ -6,12 +6,12 @@
  * See the file LICENSE.
  */
 
-#ifndef _SQUAREBALL_H
-#define _SQUAREBALL_H
+#ifndef _SQUAREBALL_SLIST_PRIVATE_H
+#define _SQUAREBALL_SLIST_PRIVATE_H
 
-#include <squareball/sb-mem.h>
-#include <squareball/sb-slist.h>
-#include <squareball/sb-string.h>
-#include <squareball/sb-trie.h>
+struct _sb_slist_t {
+    struct _sb_slist_t *next;
+    void *data;
+};
 
-#endif /* _SQUAREBALL_H */
+#endif /* _SQUAREBALL_SLIST_PRIVATE_H */

@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "squareball.h"
+#include <squareball/sb-mem.h>
 
 
 void*
