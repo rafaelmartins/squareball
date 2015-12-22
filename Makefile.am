@@ -116,6 +116,18 @@ TESTS = \
 	$(check_PROGRAMS)
 
 
+clean-local:
+	-rm -rf $(top_builddir)/doc/build/
+
+
+## Helpers: Documentation
+
+if BUILD_DOCS
+docs: clean-local Doxyfile
+	$(DOXYGEN) Doxyfile
+endif
+
+
 ## Helpers: Valgrind runner
 
 if USE_VALGRIND

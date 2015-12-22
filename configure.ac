@@ -29,6 +29,26 @@ AS_IF([test "x$ac_cv_prog_cc_c99" = "xno"], [
 
 PKG_PROG_PKG_CONFIG
 
+AC_ARG_ENABLE([doc], AS_HELP_STRING([--disable-doc],
+              [ignore presence of doxygen and disable documentation build]))
+AS_IF([test "x$enable_doc" != "xno"], [
+  AC_PATH_PROG([doxygen], [doxygen])
+  AS_IF([test "x$ac_cv_path_doxygen" = "x"], [
+    have_doxygen=no
+  ], [
+    have_doxygen=yes
+  ])
+])
+AS_IF([test "x$have_doxygen" = "xyes"], , [
+  AS_IF([test "x$enable_doc" = "xyes"], [
+    AC_MSG_ERROR([doxygen requested but not found])
+  ])
+])
+
+AM_CONDITIONAL([BUILD_DOCS], [test "x$have_doxygen" = "xyes"])
+DOXYGEN="$ac_cv_path_doxygen"
+AC_SUBST(DOXYGEN)
+
 AC_ARG_ENABLE([valgrind], AS_HELP_STRING([--disable-valgrind],
               [ignore presence of valgrind]))
 AS_IF([test "x$enable_valgrind" != "xno"], [
@@ -68,6 +88,7 @@ AM_CONDITIONAL([USE_CMOCKA], [test "x$have_cmocka" = "xyes"])
 
 AC_CONFIG_FILES([
     Makefile
+    Doxyfile
 ])
 AC_OUTPUT
 
@@ -83,5 +104,6 @@ AS_ECHO("
         ldflags:      ${LDFLAGS}
 
         tests:        ${TESTS}
+        doxygen:      ${DOXYGEN}
         valgrind:     ${VALGRIND}
 ")

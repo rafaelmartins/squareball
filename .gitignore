@@ -44,3 +44,7 @@ Makefile.in
 
 # tarballs
 squareball-*.tar.*
+
+# documentation
+/Doxyfile
+/doc/build
