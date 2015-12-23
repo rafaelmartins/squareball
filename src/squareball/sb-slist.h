@@ -11,7 +11,10 @@
 
 #include "sb-mem.h"
 
-typedef struct _sb_slist_t sb_slist_t;
+typedef struct _sb_slist_t {
+    struct _sb_slist_t *next;
+    void *data;
+} sb_slist_t;
 
 sb_slist_t* sb_slist_append(sb_slist_t *l, void *data);
 void sb_slist_free_full(sb_slist_t *l, sb_free_func_t free_func);

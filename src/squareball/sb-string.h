@@ -18,7 +18,11 @@
 #define SB_STRING_CHUNK_SIZE 128
 #endif /* SB_STRING_CHUNK_SIZE */
 
-typedef struct _sb_string_t sb_string_t;
+typedef struct {
+    char *str;
+    size_t len;
+    size_t allocated_len;
+} sb_string_t;
 
 char* sb_strdup(const char *s);
 char* sb_strndup(const char *s, size_t n);

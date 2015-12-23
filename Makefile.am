@@ -29,8 +29,6 @@ pkginclude_HEADERS = \
 	$(NULL)
 
 noinst_HEADERS = \
-	src/squareball/sb-slist-private.h \
-	src/squareball/sb-string-private.h \
 	src/squareball/sb-trie-private.h \
 	$(NULL)
 

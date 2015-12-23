@@ -12,7 +12,6 @@
 
 #include <stdlib.h>
 #include <squareball/sb-slist.h>
-#include <squareball/sb-slist-private.h>
 
 
 sb_slist_t*

@@ -18,7 +18,6 @@
 #include <stdlib.h>
 #include <squareball/sb-mem.h>
 #include <squareball/sb-string.h>
-#include <squareball/sb-string-private.h>
 
 
 char*
