@@ -30,6 +30,8 @@ char* sb_strdup_vprintf(const char *format, va_list ap);
 char* sb_strdup_printf(const char *format, ...);
 bool sb_str_starts_with(const char *str, const char *prefix);
 bool sb_str_ends_with(const char *str, const char *suffix);
+char* sb_str_lstrip(char *str);
+char* sb_str_rstrip(char *str);
 char* sb_str_strip(char *str);
 char** sb_str_split(const char *str, char c, unsigned int max_pieces);
 char* sb_str_replace(const char *str, const char search, const char *replace);

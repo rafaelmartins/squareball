@@ -104,26 +104,57 @@ sb_str_ends_with(const char *str, const char *suffix)
 
 
 char*
-sb_str_strip(char *str)
+sb_str_lstrip(char *str)
 {
     if (str == NULL)
-        return str;
+        return NULL;
     int i;
     size_t str_len = strlen(str);
-    for (i = str_len - 1; i >= 0; i--) {
-        if (!isspace(str[i])) {
-            str[i + 1] = '\0';
+    for (i = 0; i < str_len; i++) {
+        if ((str[i] != ' ') && (str[i] != '\t') && (str[i] != '\n') &&
+            (str[i] != '\r') && (str[i] != '\t') && (str[i] != '\f') &&
+            (str[i] != '\v'))
+        {
+            str += i;
             break;
         }
-    }
-    str_len = strlen(str);
-    for (i = 0; i < str_len; i++) {
-        if (!isspace(str[i])) {
-            str = str + i;
+        if (i == str_len - 1) {
+            str += str_len;
             break;
         }
     }
     return str;
+}
+
+
+char*
+sb_str_rstrip(char *str)
+{
+    if (str == NULL)
+        return NULL;
+    int i;
+    size_t str_len = strlen(str);
+    for (i = str_len - 1; i >= 0; i--) {
+        if ((str[i] != ' ') && (str[i] != '\t') && (str[i] != '\n') &&
+            (str[i] != '\r') && (str[i] != '\t') && (str[i] != '\f') &&
+            (str[i] != '\v'))
+        {
+            str[i + 1] = '\0';
+            break;
+        }
+        if (i == 0) {
+            str[0] = '\0';
+            break;
+        }
+    }
+    return str;
+}
+
+
+char*
+sb_str_strip(char *str)
+{
+    return sb_str_lstrip(sb_str_rstrip(str));
 }
 
 
