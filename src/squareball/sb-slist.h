@@ -11,14 +11,57 @@
 
 #include "sb-mem.h"
 
+/**
+ * @file squareball/sb-slist.h
+ * @brief Singly-linked list implementation
+ * @{
+ */
+
+/** Singly-linked list node structure. */
 typedef struct _sb_slist_t {
+
+    /** Next node from the list. */
     struct _sb_slist_t *next;
+
+    /** Pointer to data stored in the current list node. */
     void *data;
+
 } sb_slist_t;
 
+/**
+ * Function that appends a node to the singly-linked list.
+ *
+ * @param[in] l     The singly-linked list.
+ * @param[in] data  The pointer to the data that will be stored in the new
+ *                  list node.
+ * @return          The singly-linked list itself.
+ */
 sb_slist_t* sb_slist_append(sb_slist_t *l, void *data);
-void sb_slist_free_full(sb_slist_t *l, sb_free_func_t free_func);
+
+/**
+ * Function that frees all the memory used by the singly-linked list.
+ *
+ * @param[in] l  The singly-linked list.
+ */
 void sb_slist_free(sb_slist_t *l);
+
+/**
+ * Function that frees all the memory used by the singly-linked list, and the
+ * data stored in the list nodes, using the provided helper function.
+ *
+ * @param[in] l          The singly-linked list.
+ * @param[in] free_func  Helper function, to free data stored in each node.
+ */
+void sb_slist_free_full(sb_slist_t *l, sb_free_func_t free_func);
+
+/**
+ * Function that counts the number of nodes in the provided singly-linked list.
+ *
+ * @param[in] l  The singly-linked list.
+ * @return       The number of nodes in the singly-linked list.
+ */
 unsigned int sb_slist_length(sb_slist_t *l);
+
+/** @} */
 
 #endif /* _SQUAREBALL_SLIST_H */

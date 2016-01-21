@@ -18,6 +18,17 @@
 #define SB_STRING_CHUNK_SIZE 128
 #endif /* SB_STRING_CHUNK_SIZE */
 
+/**
+ * @file squareball/sb-string.h
+ * @brief String related functions.
+ *
+ * This includes an implementation of string object that grows as required
+ * by the content added to it, and helper functions to work with C strings.
+ *
+ * @{
+ */
+
+/** Automatically growing string structure. */
 typedef struct {
     char *str;
     size_t len;

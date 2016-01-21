@@ -11,9 +11,41 @@
 
 #include <stddef.h>
 
+/**
+ * @file squareball/sb-mem.h
+ * @brief Memory allocation related helpers.
+ * @{
+ */
+
+/**
+ * Function signature for helpers that are used to free memory of custom types.
+ *
+ * Each function should receive the pointer, and free the memory used by the
+ * type as needed.
+ *
+ * The @ref sb_slist_free_full function is an example of usage of these helper
+ * functions.
+ */
 typedef void (*sb_free_func_t) (void *ptr);
 
+/**
+ * Safe malloc replacement function. This function validates the output of
+ * the libc's malloc call and aborts if needed. See malloc(3) for details.
+ *
+ * @param[in] size  Number of bytes to be allocated.
+ * @return          A pointer to the allocated memory.
+ */
 void* sb_malloc(size_t size);
+
+/**
+ * Safe realloc replacement function. This function validates the output of
+ * the libc's realloc call and aborts if needed. See realloc(3) for details.
+ * @param[in] ptr   A pointer to be resized.
+ * @param[in] size  New number of bytes allocated after reallocation.
+ * @return          A pointer to the reallocated memory.
+ */
 void* sb_realloc(void *ptr, size_t size);
+
+/** @} */
 
 #endif /* _SQUAREBALL_MEM_H */
