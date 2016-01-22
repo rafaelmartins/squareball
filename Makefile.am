@@ -24,6 +24,7 @@ include_HEADERS = \
 pkginclude_HEADERS = \
 	src/squareball/sb-mem.h \
 	src/squareball/sb-slist.h \
+	src/squareball/sb-strfuncs.h \
 	src/squareball/sb-string.h \
 	src/squareball/sb-trie.h \
 	$(NULL)
@@ -43,6 +44,7 @@ check_PROGRAMS = \
 libsquareball_la_SOURCES = \
 	src/sb-mem.c \
 	src/sb-slist.c \
+	src/sb-strfuncs.c \
 	src/sb-string.c \
 	src/sb-trie.c \
 	$(NULL)
@@ -66,6 +68,7 @@ if USE_CMOCKA
 
 check_PROGRAMS += \
 	tests/check_slist \
+	tests/check_strfuncs \
 	tests/check_string \
 	tests/check_trie \
 	$(NULL)
@@ -84,6 +87,24 @@ tests_check_slist_LDFLAGS = \
 	$(NULL)
 
 tests_check_slist_LDADD = \
+	$(CMOCKA_LIBS) \
+	libsquareball.la \
+	$(NULL)
+
+tests_check_strfuncs_SOURCES = \
+	tests/check_strfuncs.c \
+	$(NULL)
+
+tests_check_strfuncs_CFLAGS = \
+	$(CMOCKA_CFLAGS) \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+tests_check_strfuncs_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+tests_check_strfuncs_LDADD = \
 	$(CMOCKA_LIBS) \
 	libsquareball.la \
 	$(NULL)

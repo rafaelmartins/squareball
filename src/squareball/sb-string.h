@@ -14,16 +14,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#ifndef SB_STRING_CHUNK_SIZE
-#define SB_STRING_CHUNK_SIZE 128
-#endif /* SB_STRING_CHUNK_SIZE */
-
 /**
  * @file squareball/sb-string.h
- * @brief String related functions.
- *
- * This includes an implementation of string object that grows as required
- * by the content added to it, and helper functions to work with C strings.
+ * @brief String object that grows automatically, as required by the content
+ *        added to it.
  *
  * @{
  */
@@ -35,21 +29,6 @@ typedef struct {
     size_t allocated_len;
 } sb_string_t;
 
-char* sb_strdup(const char *s);
-char* sb_strndup(const char *s, size_t n);
-char* sb_strdup_vprintf(const char *format, va_list ap);
-char* sb_strdup_printf(const char *format, ...);
-bool sb_str_starts_with(const char *str, const char *prefix);
-bool sb_str_ends_with(const char *str, const char *suffix);
-char* sb_str_lstrip(char *str);
-char* sb_str_rstrip(char *str);
-char* sb_str_strip(char *str);
-char** sb_str_split(const char *str, char c, unsigned int max_pieces);
-char* sb_str_replace(const char *str, const char search, const char *replace);
-void sb_strv_free(char **strv);
-char* sb_strv_join(const char **strv, const char *separator);
-unsigned int sb_strv_length(char **strv);
-
 sb_string_t* sb_string_new(void);
 char* sb_string_free(sb_string_t *str, bool free_str);
 sb_string_t* sb_string_dup(sb_string_t *str);
@@ -57,5 +36,7 @@ sb_string_t* sb_string_append_len(sb_string_t *str, const char *suffix, size_t l
 sb_string_t* sb_string_append(sb_string_t *str, const char *suffix);
 sb_string_t* sb_string_append_c(sb_string_t *str, char c);
 sb_string_t* sb_string_append_printf(sb_string_t *str, const char *format, ...);
+
+/** @} */
 
 #endif /* _SQUAREBALL_STRING_H */

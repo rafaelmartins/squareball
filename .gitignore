@@ -39,6 +39,7 @@ Makefile.in
 
 # tests
 /tests/check_slist
+/tests/check_strfuncs
 /tests/check_string
 /tests/check_trie
 
