@@ -14,6 +14,7 @@
 #include <stdlib.h>
 
 #include <squareball/sb-slist.h>
+#include <squareball/sb-strfuncs.h>
 #include <squareball/sb-string.h>
 
 
