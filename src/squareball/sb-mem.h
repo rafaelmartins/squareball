@@ -32,17 +32,17 @@ typedef void (*sb_free_func_t) (void *ptr);
  * Safe malloc replacement function. This function validates the output of
  * the libc's malloc call and aborts if needed. See malloc(3) for details.
  *
- * @param[in] size  Number of bytes to be allocated.
- * @return          A pointer to the allocated memory.
+ * @param size  Number of bytes to be allocated.
+ * @return      A pointer to the allocated memory.
  */
 void* sb_malloc(size_t size);
 
 /**
  * Safe realloc replacement function. This function validates the output of
  * the libc's realloc call and aborts if needed. See realloc(3) for details.
- * @param[in] ptr   A pointer to be resized.
- * @param[in] size  New number of bytes allocated after reallocation.
- * @return          A pointer to the reallocated memory.
+ * @param ptr   A pointer to be resized.
+ * @param size  New number of bytes allocated after reallocation.
+ * @return      A pointer to the reallocated memory.
  */
 void* sb_realloc(void *ptr, size_t size);
 
