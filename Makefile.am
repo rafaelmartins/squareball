@@ -5,6 +5,7 @@ ACLOCAL_AMFLAGS = -I m4
 AM_DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-tests \
 	--disable-valgrind \
+	--disable-bundleme \
 	$(NULL)
 
 
@@ -16,6 +17,24 @@ EXTRA_DIST = \
 	README.md \
 	$(NULL)
 
+
+if BUNDLE_ME
+
+noinst_HEADERS = \
+	src/squareball.h \
+	src/squareball/sb-mem.h \
+	src/squareball/sb-slist.h \
+	src/squareball/sb-strfuncs.h \
+	src/squareball/sb-string.h \
+	src/squareball/sb-trie.h \
+	src/squareball/sb-trie-private.h \
+	$(NULL)
+
+noinst_LTLIBRARIES = \
+	libsquareball.la \
+	$(NULL)
+
+else
 
 include_HEADERS = \
 	src/squareball.h \
@@ -37,6 +56,8 @@ lib_LTLIBRARIES = \
 	libsquareball.la \
 	$(NULL)
 
+endif
+
 check_PROGRAMS = \
 	$(NULL)
 
@@ -57,9 +78,11 @@ libsquareball_la_CFLAGS = \
 libsquareball_la_LIBADD = \
 	$(NULL)
 
+if !BUNDLE_ME
 libsquareball_la_LDFLAGS = \
 	-version-info $(LIBSQUAREBALL_LT_VERSION_INFO) \
 	$(NULL)
+endif
 
 
 ## Build rules: tests

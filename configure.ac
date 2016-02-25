@@ -29,6 +29,14 @@ AS_IF([test "x$ac_cv_prog_cc_c99" = "xno"], [
 
 PKG_PROG_PKG_CONFIG
 
+AC_ARG_ENABLE([bundleme], AS_HELP_STRING([--enable-bundleme],
+              [do not build shared library and do not install anything]))
+AS_IF([test "x$enable_bundleme" = "xyes"], [
+  enable_static=yes
+  enable_shared=no
+])
+AM_CONDITIONAL([BUNDLE_ME], [test "x$enable_bundleme" = "xyes"])
+
 AC_ARG_ENABLE([doc], AS_HELP_STRING([--disable-doc],
               [ignore presence of doxygen and disable documentation build]))
 AS_IF([test "x$enable_doc" != "xno"], [
@@ -92,7 +100,7 @@ AC_CONFIG_FILES([
 ])
 AC_OUTPUT
 
-AS_ECHO("
+AS_IF([test "x$enable_bundleme" != "xyes"], [AS_ECHO("
         ==== ${PACKAGE_STRING} ====
 
         prefix:       ${prefix}
@@ -104,6 +112,7 @@ AS_ECHO("
         ldflags:      ${LDFLAGS}
 
         tests:        ${TESTS}
+
         doxygen:      ${DOXYGEN}
         valgrind:     ${VALGRIND}
-")
+")])
