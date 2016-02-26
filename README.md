@@ -12,7 +12,7 @@ TODO
 
 ## Copyright notice
 
-`squareball` is based on code extracted from [blogc](https://github.com/blogc/blogc), to make it reusable by other applications. Its copyright is owned by the same owners of blogc's copyright. See `LICENSE` for details.
+`squareball` is based on code extracted from [blogc](https://github.com/blogc/blogc), to make it reusable by other applications. Its copyright is owned by the same owners of `blogc`'s copyright. See `LICENSE` file for details.
 
 ## Meaning of the library name
 
