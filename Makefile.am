@@ -13,9 +13,15 @@ AM_DISTCHECK_CONFIGURE_FLAGS = \
 ## File listings
 
 EXTRA_DIST = \
+	build-aux/git-version-gen \
+	$(top_srcdir)/.version \
 	autogen.sh \
 	LICENSE \
 	README.md \
+	$(NULL)
+
+BUILT_SOURCES = \
+	$(top_srcdir)/.version \
 	$(NULL)
 
 
@@ -252,6 +258,15 @@ if BUILD_DOCS
 docs: clean-local Doxyfile
 	$(DOXYGEN) Doxyfile
 endif
+
+
+## Helpers: git-version-gen
+
+$(top_srcdir)/.version:
+	echo $(VERSION) > $@-t && mv $@-t $@
+
+dist-hook:
+	echo $(VERSION) > $(distdir)/.tarball-version
 
 
 ## Helpers: Valgrind runner
