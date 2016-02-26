@@ -12,17 +12,8 @@ TODO
 
 ## Copyright notice
 
-``squareball`` is based on code forked from [blogc](https://github.com/blogc/blogc). Its copyright is owned by the same owners of ``blogc`` copyright.
-
-    /*
-     * squareball: A general-purpose library for C99.
-     * Copyright (C) 2014-2015 Rafael G. Martins <rafael@rafaelmartins.eng.br>
-     *
-     * This program can be distributed under the terms of the BSD License.
-     * See the file LICENSE.
-     */
-
+`squareball` is based on code extracted from [blogc](https://github.com/blogc/blogc), to make it reusable by other applications. Its copyright is owned by the same owners of blogc's copyright. See `LICENSE` for details.
 
 ## Meaning of the library name
 
-``squareball`` library name is a tribute to [Quico](http://hero.wikia.com/wiki/Quico), that was Carlos Villagrán's character in the Mexican television sitcom *El Chavo del Ocho*. Unfortunately Quico never got his promised square ball. :-(
+`squareball` library name is a tribute to [Quico](http://hero.wikia.com/wiki/Quico), that was Carlos Villagrán's character in the Mexican television sitcom *El Chavo del Ocho*. Unfortunately Quico never got his promised square ball. :-(
