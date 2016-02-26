@@ -1,18 +1,24 @@
 # squareball
 
+[![Build Status](https://jenkins.rgm.io/buildStatus/icon?job=squareball-tests)](https://jenkins.rgm.io/job/squareball-tests/)
+
 A general-purpose library for C99.
+
 
 ## About the library
 
 TODO
 
+
 ## API documentation
 
 TODO
 
+
 ## Copyright notice
 
 `squareball` is based on code extracted from [blogc](https://github.com/blogc/blogc), to make it reusable by other applications. Its copyright is owned by the same owners of `blogc`'s copyright. See `LICENSE` file for details.
+
 
 ## Meaning of the library name
 
