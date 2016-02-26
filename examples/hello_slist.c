@@ -18,6 +18,7 @@ main(int argc, char **argv)
 
     l = sb_slist_append(l, sb_strdup("A list item"));
     l = sb_slist_append(l, sb_strdup("Another list item"));
+    l = sb_slist_prepend(l, sb_strdup("Yet another list item"));
 
     printf("Number of list items: %u\n\n", sb_slist_length(l));
 

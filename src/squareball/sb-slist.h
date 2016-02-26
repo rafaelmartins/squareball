@@ -40,6 +40,16 @@ typedef struct _sb_slist_t {
 sb_slist_t* sb_slist_append(sb_slist_t *l, void *data);
 
 /**
+ * Function that prepends a node to the singly-linked list.
+ *
+ * @param l     The singly-linked list.
+ * @param data  The pointer to the data that will be stored in the new
+ *              list node.
+ * @return      The singly-linked list itself, a pointer to the new start node.
+ */
+sb_slist_t* sb_slist_prepend(sb_slist_t *l, void *data);
+
+/**
  * Function that frees all the memory used by the singly-linked list.
  *
  * @param l  The singly-linked list.

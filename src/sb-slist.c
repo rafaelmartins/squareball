@@ -35,6 +35,21 @@ sb_slist_append(sb_slist_t *l, void *data)
 }
 
 
+sb_slist_t*
+sb_slist_prepend(sb_slist_t *l, void *data)
+{
+    sb_slist_t *node = malloc(sizeof(sb_slist_t));
+    if (node == NULL) {
+        l = NULL;
+        return l;
+    }
+    node->data = data;
+    node->next = l;
+    l = node;
+    return l;
+}
+
+
 void
 sb_slist_free_full(sb_slist_t *l, sb_free_func_t free_func)
 {

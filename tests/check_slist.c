@@ -37,6 +37,24 @@ test_slist_append(void **state)
 
 
 static void
+test_slist_prepend(void **state)
+{
+    sb_slist_t *l = NULL;
+    l = sb_slist_prepend(l, (void*) sb_strdup("bola"));
+    assert_non_null(l);
+    assert_string_equal(l->data, "bola");
+    assert_null(l->next);
+    l = sb_slist_prepend(l, (void*) sb_strdup("guda"));
+    assert_non_null(l);
+    assert_string_equal(l->data, "guda");
+    assert_non_null(l->next);
+    assert_string_equal(l->next->data, "bola");
+    assert_null(l->next->next);
+    sb_slist_free_full(l, free);
+}
+
+
+static void
 test_slist_free(void **state)
 {
     sb_slist_t *l = NULL;
@@ -73,6 +91,7 @@ main(void)
 {
     const UnitTest tests[] = {
         unit_test(test_slist_append),
+        unit_test(test_slist_prepend),
         unit_test(test_slist_free),
         unit_test(test_slist_length),
     };
