@@ -18,7 +18,7 @@
  * @file squareball/sb-string.h
  * @brief String object that grows automatically, as required by the content
  *        added to it.
- *
+ * @example hello_string.c
  * @{
  */
 

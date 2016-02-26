@@ -14,6 +14,7 @@
 /**
  * @file squareball/sb-slist.h
  * @brief Singly-linked list implementation
+ * @example hello_slist.c
  * @{
  */
 

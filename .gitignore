@@ -38,6 +38,11 @@ Makefile.in
 /m4/*.m4
 !/m4/pkg.m4
 
+# examples
+/examples/hello_slist
+/examples/hello_string
+/examples/hello_trie
+
 # tests
 /tests/check_slist
 /tests/check_strfuncs

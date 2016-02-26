@@ -96,6 +96,14 @@ AS_IF([test "x$have_cmocka" = "xyes"], , [
 ])
 AM_CONDITIONAL([USE_CMOCKA], [test "x$have_cmocka" = "xyes"])
 
+AC_ARG_ENABLE([examples], AS_HELP_STRING([--enable-examples], [build examples]))
+AS_IF([test "x$enable_examples" = "xyes"], [
+  EXAMPLES="enabled"
+], [
+  EXAMPLES="disabled"
+])
+AM_CONDITIONAL([BUILD_EXAMPLES], [test "x$enable_examples" = "xyes"])
+
 AC_CONFIG_FILES([
   Makefile
   Doxyfile
@@ -115,6 +123,7 @@ AS_IF([test "x$enable_bundleme" != "xyes"], [AS_ECHO("
         ldflags:      ${LDFLAGS}
 
         tests:        ${TESTS}
+        examples:     ${EXAMPLES}
 
         doxygen:      ${DOXYGEN}
         valgrind:     ${VALGRIND}

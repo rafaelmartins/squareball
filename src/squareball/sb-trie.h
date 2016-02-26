@@ -20,7 +20,7 @@
  *
  * This trie implementation is mostly designed to be used as a replacement for
  * a hash table, where the keys are always strings (arrays of \c char elements).
- *
+ * @example hello_trie.c
  * @{
  */
 

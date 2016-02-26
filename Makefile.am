@@ -3,6 +3,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
 AM_DISTCHECK_CONFIGURE_FLAGS = \
+	--enable-examples \
 	--enable-tests \
 	--disable-valgrind \
 	--disable-bundleme \
@@ -61,6 +62,9 @@ pkgconfig_DATA = squareball.pc
 
 endif
 
+noinst_PROGRAMS = \
+	$(NULL)
+
 check_PROGRAMS = \
 	$(NULL)
 
@@ -85,6 +89,67 @@ if !BUNDLE_ME
 libsquareball_la_LDFLAGS = \
 	-version-info $(LIBSQUAREBALL_LT_VERSION_INFO) \
 	$(NULL)
+endif
+
+
+## Build rules: examples
+
+if BUILD_EXAMPLES
+
+noinst_PROGRAMS += \
+	examples/hello_slist \
+	examples/hello_string \
+	examples/hello_trie \
+	$(NULL)
+
+examples_hello_slist_SOURCES = \
+	examples/hello_slist.c \
+	$(NULL)
+
+examples_hello_slist_CFLAGS = \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+examples_hello_slist_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+examples_hello_slist_LDADD= \
+	libsquareball.la \
+	$(NULL)
+
+examples_hello_string_SOURCES = \
+	examples/hello_string.c \
+	$(NULL)
+
+examples_hello_string_CFLAGS = \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+examples_hello_string_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+examples_hello_string_LDADD= \
+	libsquareball.la \
+	$(NULL)
+
+examples_hello_trie_SOURCES = \
+	examples/hello_trie.c \
+	$(NULL)
+
+examples_hello_trie_CFLAGS = \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+examples_hello_trie_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+examples_hello_trie_LDADD= \
+	libsquareball.la \
+	$(NULL)
+
 endif
 
 
