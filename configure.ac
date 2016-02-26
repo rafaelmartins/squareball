@@ -97,8 +97,9 @@ AS_IF([test "x$have_cmocka" = "xyes"], , [
 AM_CONDITIONAL([USE_CMOCKA], [test "x$have_cmocka" = "xyes"])
 
 AC_CONFIG_FILES([
-    Makefile
-    Doxyfile
+  Makefile
+  Doxyfile
+  squareball.pc
 ])
 AC_OUTPUT
 

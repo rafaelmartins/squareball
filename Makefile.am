@@ -56,6 +56,9 @@ lib_LTLIBRARIES = \
 	libsquareball.la \
 	$(NULL)
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = squareball.pc
+
 endif
 
 check_PROGRAMS = \
