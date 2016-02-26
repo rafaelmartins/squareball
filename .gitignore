@@ -36,6 +36,7 @@ Makefile.in
 
 # installed .m4 files
 /m4/*.m4
+!/m4/pkg.m4
 
 # tests
 /tests/check_slist
