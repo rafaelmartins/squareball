@@ -166,7 +166,8 @@ sb_trie_size(sb_trie_t *trie)
 
 
 static void
-sb_trie_foreach_node(sb_trie_node_t *node, sb_string_t *str, void (*func)(const char *key, void *data))
+sb_trie_foreach_node(sb_trie_node_t *node, sb_string_t *str,
+    sb_trie_foreach_func_t func)
 {
     if (node == NULL)
         return;
@@ -192,7 +193,7 @@ sb_trie_foreach_node(sb_trie_node_t *node, sb_string_t *str, void (*func)(const 
 
 
 void
-sb_trie_foreach(sb_trie_t *trie, void (*func)(const char *key, void *data))
+sb_trie_foreach(sb_trie_t *trie, sb_trie_foreach_func_t func)
 {
     if (trie->root == NULL)
         return;
