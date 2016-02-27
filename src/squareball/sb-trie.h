@@ -76,7 +76,7 @@ void* sb_trie_lookup(sb_trie_t *trie, const char *key);
  * @param trie  The trie.
  * @return      The size of the given trie.
  */
-unsigned int sb_trie_size(sb_trie_t *trie);
+size_t sb_trie_size(sb_trie_t *trie);
 
 /**
  * Function that calls a given function for each element of a trie.

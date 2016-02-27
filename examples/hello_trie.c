@@ -27,7 +27,7 @@ main(int argc, char **argv)
     sb_trie_insert(t, "quadrada", sb_strdup("qwe"));
     sb_trie_insert(t, "quadrado", sb_strdup("zxc"));
 
-    printf("Trie size: %u\n", sb_trie_size(t));
+    printf("Trie size: %zu\n", sb_trie_size(t));
     printf("The value for key 'bola' is: %s\n\n",
         (char*) sb_trie_lookup(t, "bola"));
 

@@ -140,7 +140,7 @@ sb_trie_lookup(sb_trie_t *trie, const char *key)
 
 
 static void
-sb_trie_size_node(sb_trie_node_t *node, unsigned int *count)
+sb_trie_size_node(sb_trie_node_t *node, size_t *count)
 {
     if (node == NULL)
         return;
@@ -153,13 +153,13 @@ sb_trie_size_node(sb_trie_node_t *node, unsigned int *count)
 }
 
 
-unsigned int
+size_t
 sb_trie_size(sb_trie_t *trie)
 {
     if (trie == NULL)
         return 0;
 
-    unsigned int count = 0;
+    size_t count = 0;
     sb_trie_size_node(trie->root, &count);
     return count;
 }
