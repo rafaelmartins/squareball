@@ -156,7 +156,7 @@ char* sb_strv_join(const char **strv, const char *separator);
  * @param strv  The NULL-terminated array of strings.
  * @return      The length of the given NULL-terminated array of strings.
  */
-unsigned int sb_strv_length(char **strv);
+size_t sb_strv_length(char **strv);
 
 /** @} */
 

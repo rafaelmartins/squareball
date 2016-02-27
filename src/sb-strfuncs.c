@@ -200,8 +200,7 @@ sb_strv_free(char **strv)
 {
     if (strv == NULL)
         return;
-    unsigned int i;
-    for (i = 0; strv[i] != NULL; i++)
+    for (size_t i = 0; strv[i] != NULL; i++)
         free(strv[i]);
     free(strv);
 }
@@ -212,23 +211,22 @@ sb_strv_join(const char **strv, const char *separator)
 {
     if (strv == NULL)
         return NULL;
-    unsigned int i = 0;
     sb_string_t *str = sb_string_new();
-    for (i = 0; strv[i] != NULL; i++) {
+    for (size_t i = 0; strv[i] != NULL; i++) {
         str = sb_string_append(str, strv[i]);
-        if (strv[i+1] != NULL)
+        if (strv[i + 1] != NULL)
             str = sb_string_append(str, separator);
     }
     return sb_string_free(str, false);
 }
 
 
-unsigned int
+size_t
 sb_strv_length(char **strv)
 {
     if (!strv)
         return 0;
-    unsigned int i;
+    size_t i;
     for (i = 0; strv[i] != NULL; i++);
     return i;
 }
