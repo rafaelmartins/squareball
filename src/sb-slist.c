@@ -73,10 +73,10 @@ sb_slist_free(sb_slist_t *l)
 }
 
 
-unsigned int
+size_t
 sb_slist_length(sb_slist_t *l)
 {
-    unsigned int i;
+    size_t i;
     sb_slist_t *tmp;
     for (tmp = l, i = 0; tmp != NULL; tmp = tmp->next, i++);
     return i;

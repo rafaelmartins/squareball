@@ -71,7 +71,7 @@ void sb_slist_free_full(sb_slist_t *l, sb_free_func_t free_func);
  * @param l  The singly-linked list.
  * @return   The number of nodes in the singly-linked list.
  */
-unsigned int sb_slist_length(sb_slist_t *l);
+size_t sb_slist_length(sb_slist_t *l);
 
 /** @} */
 
