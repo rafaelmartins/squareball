@@ -22,7 +22,7 @@ sb_malloc(size_t size)
     void *rv = malloc(size);
     if (rv == NULL) {
         fprintf(stderr, "fatal: Failed to allocate memory!\n");
-        exit(1);
+        abort();
     }
     return rv;
 }
@@ -36,7 +36,7 @@ sb_realloc(void *ptr, size_t size)
     if (rv == NULL && size != 0) {
         fprintf(stderr, "fatal: Failed to reallocate memory!\n");
         free(ptr);
-        exit(1);
+        abort();
     }
     return rv;
 }
