@@ -83,6 +83,7 @@ test_slist_length(void **state)
     l = sb_slist_append(l, (void*) sb_strdup("chunda"));
     assert_int_equal(sb_slist_length(l), 3);
     sb_slist_free_full(l, free);
+    assert_int_equal(sb_slist_length(NULL), 0);
 }
 
 

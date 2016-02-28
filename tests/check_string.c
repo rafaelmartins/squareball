@@ -42,6 +42,7 @@ test_string_free(void **state)
     char *tmp = sb_string_free(str, false);
     assert_string_equal(tmp, "bola");
     free(tmp);
+    assert_null(sb_string_free(NULL, false));
 }
 
 
@@ -60,6 +61,7 @@ test_string_dup(void **state)
     assert_int_equal(new->allocated_len, SB_STRING_CHUNK_SIZE);
     assert_null(sb_string_free(new, true));
     assert_null(sb_string_free(str, true));
+    assert_null(sb_string_dup(NULL));
 }
 
 
@@ -135,6 +137,14 @@ test_string_append_len(void **state)
     assert_int_equal(str->len, 1204);
     assert_int_equal(str->allocated_len, SB_STRING_CHUNK_SIZE * 10);
     assert_null(sb_string_free(str, true));
+    str = sb_string_new();
+    str = sb_string_append_len(str, NULL, 0);
+    assert_non_null(str);
+    assert_string_equal(str->str, "");
+    assert_int_equal(str->len, 0);
+    assert_int_equal(str->allocated_len, SB_STRING_CHUNK_SIZE);
+    assert_null(sb_string_free(str, true));
+    assert_null(sb_string_append_len(NULL, "foo", 3));
 }
 
 
@@ -202,6 +212,15 @@ test_string_append(void **state)
     assert_int_equal(str->len, 1204);
     assert_int_equal(str->allocated_len, SB_STRING_CHUNK_SIZE * 10);
     assert_null(sb_string_free(str, true));
+    str = sb_string_new();
+    str = sb_string_append(str, NULL);
+    assert_non_null(str);
+    assert_string_equal(str->str, "");
+    assert_int_equal(str->len, 0);
+    assert_int_equal(str->allocated_len, SB_STRING_CHUNK_SIZE);
+    assert_null(sb_string_free(str, true));
+    assert_null(sb_string_append(NULL, "asd"));
+    assert_null(sb_string_append(NULL, NULL));
 }
 
 
@@ -226,6 +245,7 @@ test_string_append_c(void **state)
     assert_int_equal(str->len, 604);
     assert_int_equal(str->allocated_len, SB_STRING_CHUNK_SIZE * 5);
     assert_null(sb_string_free(str, true));
+    assert_null(sb_string_append_c(NULL, 0));
 }
 
 
@@ -239,6 +259,7 @@ test_string_append_printf(void **state)
     assert_int_equal(str->len, 12);
     assert_int_equal(str->allocated_len, SB_STRING_CHUNK_SIZE);
     assert_null(sb_string_free(str, true));
+    assert_null(sb_string_append_printf(NULL, "asd"));
 }
 
 

@@ -30,7 +30,7 @@ sb_trie_new(sb_free_func_t free_func)
 static void
 sb_trie_free_node(sb_trie_t *trie, sb_trie_node_t *node)
 {
-    if (node == NULL)
+    if (trie == NULL || node == NULL)
         return;
     if (node->data != NULL && trie->free_func != NULL)
         trie->free_func(node->data);
@@ -53,7 +53,7 @@ sb_trie_free(sb_trie_t *trie)
 void
 sb_trie_insert(sb_trie_t *trie, const char *key, void *data)
 {
-    if (data == NULL || key == NULL)
+    if (trie == NULL || key == NULL || data == NULL)
         return;
 
     sb_trie_node_t *parent = NULL;
@@ -113,7 +113,7 @@ clean:
 void*
 sb_trie_lookup(sb_trie_t *trie, const char *key)
 {
-    if (trie->root == NULL || key == NULL)
+    if (trie == NULL || trie->root == NULL || key == NULL)
         return NULL;
 
     sb_trie_node_t *parent = trie->root;
@@ -142,7 +142,7 @@ sb_trie_lookup(sb_trie_t *trie, const char *key)
 static void
 sb_trie_size_node(sb_trie_node_t *node, size_t *count)
 {
-    if (node == NULL)
+    if (node == NULL || count == NULL)
         return;
 
     if (node->key == '\0')
@@ -169,7 +169,7 @@ static void
 sb_trie_foreach_node(sb_trie_node_t *node, sb_string_t *str,
     sb_trie_foreach_func_t func)
 {
-    if (node == NULL)
+    if (node == NULL || str == NULL || func == NULL)
         return;
 
     if (node->key == '\0') {
@@ -195,7 +195,7 @@ sb_trie_foreach_node(sb_trie_node_t *node, sb_string_t *str,
 void
 sb_trie_foreach(sb_trie_t *trie, sb_trie_foreach_func_t func)
 {
-    if (trie->root == NULL)
+    if (trie == NULL || trie->root == NULL || func == NULL)
         return;
 
     sb_string_t *str = sb_string_new();

@@ -178,6 +178,10 @@ test_str_replace(void **state)
     str = sb_str_replace("bolao", 'b', "zaz");
     assert_string_equal(str, "zazolao");
     free(str);
+    str = sb_str_replace("bolao", 'b', NULL);
+    assert_string_equal(str, "bolao");
+    free(str);
+    assert_null(sb_str_replace(NULL, 'b', "zaz"));
 }
 
 
@@ -192,7 +196,9 @@ test_strv_join(void **state)
     str = sb_strv_join(pieces2, ":");
     assert_string_equal(str, "");
     free(str);
+    assert_null(sb_strv_join(pieces, NULL));
     assert_null(sb_strv_join(NULL, ":"));
+    assert_null(sb_strv_join(NULL, NULL));
 }
 
 

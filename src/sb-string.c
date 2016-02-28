@@ -40,6 +40,8 @@ sb_string_new(void)
 char*
 sb_string_free(sb_string_t *str, bool free_str)
 {
+    if (str == NULL)
+        return NULL;
     char *rv = NULL;
     if (free_str)
         free(str->str);
@@ -53,6 +55,8 @@ sb_string_free(sb_string_t *str, bool free_str)
 sb_string_t*
 sb_string_dup(sb_string_t *str)
 {
+    if (str == NULL)
+        return NULL;
     sb_string_t* new = sb_string_new();
     return sb_string_append_len(new, str->str, str->len);
 }
@@ -61,6 +65,8 @@ sb_string_dup(sb_string_t *str)
 sb_string_t*
 sb_string_append_len(sb_string_t *str, const char *suffix, size_t len)
 {
+    if (str == NULL)
+        return NULL;
     if (suffix == NULL)
         return str;
     size_t old_len = str->len;
@@ -78,15 +84,18 @@ sb_string_append_len(sb_string_t *str, const char *suffix, size_t len)
 sb_string_t*
 sb_string_append(sb_string_t *str, const char *suffix)
 {
-    if (suffix == NULL)
-        return str;
-    return sb_string_append_len(str, suffix, strlen(suffix));
+    if (str == NULL)
+        return NULL;
+    const char *my_suffix = suffix == NULL ? "" : suffix;
+    return sb_string_append_len(str, my_suffix, strlen(my_suffix));
 }
 
 
 sb_string_t*
 sb_string_append_c(sb_string_t *str, char c)
 {
+    if (str == NULL)
+        return NULL;
     size_t old_len = str->len;
     str->len += 1;
     if (str->len + 1 > str->allocated_len) {
@@ -102,6 +111,8 @@ sb_string_append_c(sb_string_t *str, char c)
 sb_string_t*
 sb_string_append_printf(sb_string_t *str, const char *format, ...)
 {
+    if (str == NULL)
+        return NULL;
     va_list ap;
     va_start(ap, format);
     char *tmp = sb_strdup_vprintf(format, ap);

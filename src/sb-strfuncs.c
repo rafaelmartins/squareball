@@ -162,7 +162,7 @@ sb_str_strip(char *str)
 char**
 sb_str_split(const char *str, char c, unsigned int max_pieces)
 {
-    if (!str)
+    if (str == NULL)
         return NULL;
     char **rv = sb_malloc(sizeof(char*));
     unsigned int i, start = 0, count = 0;
@@ -191,6 +191,8 @@ sb_str_replace(const char *str, const char search, const char *replace)
         return NULL;
     char* rv = sb_strv_join((const char**) pieces, replace);
     sb_strv_free(pieces);
+    if (rv == NULL)
+        return sb_strdup(str);
     return rv;
 }
 
@@ -209,7 +211,7 @@ sb_strv_free(char **strv)
 char*
 sb_strv_join(const char **strv, const char *separator)
 {
-    if (strv == NULL)
+    if (strv == NULL || separator == NULL)
         return NULL;
     sb_string_t *str = sb_string_new();
     for (size_t i = 0; strv[i] != NULL; i++) {
@@ -224,7 +226,7 @@ sb_strv_join(const char **strv, const char *separator)
 size_t
 sb_strv_length(char **strv)
 {
-    if (!strv)
+    if (strv == NULL)
         return 0;
     size_t i;
     for (i = 0; strv[i] != NULL; i++);

@@ -262,6 +262,10 @@ test_trie_insert_duplicated(void **state)
     assert_string_equal(trie->root->child->child->child->child->data, "asdf");
 
     sb_trie_free(trie);
+
+    trie = NULL;
+    sb_trie_insert(trie, "bola", NULL);
+    assert_null(trie);
 }
 
 
@@ -326,6 +330,8 @@ test_trie_lookup(void **state)
     assert_null(sb_trie_lookup(trie, "arcoiro"));
 
     sb_trie_free(trie);
+
+    assert_null(sb_trie_lookup(NULL, "bola"));
 }
 
 
@@ -388,6 +394,9 @@ test_trie_foreach(void **state)
 
     counter = 0;
     sb_trie_foreach(trie, mock_foreach);
+    sb_trie_foreach(NULL, mock_foreach);
+    sb_trie_foreach(trie, NULL);
+    sb_trie_foreach(NULL, NULL);
 
     sb_trie_free(trie);
 }

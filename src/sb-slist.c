@@ -11,21 +11,19 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <stdlib.h>
+#include <squareball/sb-mem.h>
 #include <squareball/sb-slist.h>
 
 
 sb_slist_t*
 sb_slist_append(sb_slist_t *l, void *data)
 {
-    sb_slist_t *node = malloc(sizeof(sb_slist_t));
-    if (node == NULL) {
-        l = NULL;
-        return l;
-    }
+    sb_slist_t *node = sb_malloc(sizeof(sb_slist_t));
     node->data = data;
     node->next = NULL;
-    if (l == NULL)
+    if (l == NULL) {
         l = node;
+    }
     else {
         sb_slist_t *tmp;
         for (tmp = l; tmp->next != NULL; tmp = tmp->next);
@@ -38,11 +36,7 @@ sb_slist_append(sb_slist_t *l, void *data)
 sb_slist_t*
 sb_slist_prepend(sb_slist_t *l, void *data)
 {
-    sb_slist_t *node = malloc(sizeof(sb_slist_t));
-    if (node == NULL) {
-        l = NULL;
-        return l;
-    }
+    sb_slist_t *node = sb_malloc(sizeof(sb_slist_t));
     node->data = data;
     node->next = l;
     l = node;
@@ -55,7 +49,8 @@ sb_slist_free_full(sb_slist_t *l, sb_free_func_t free_func)
 {
     while (l != NULL) {
         sb_slist_t *tmp = l->next;
-        free_func(l->data);
+        if (free_func != NULL)
+            free_func(l->data);
         free(l);
         l = tmp;
     }
@@ -65,17 +60,15 @@ sb_slist_free_full(sb_slist_t *l, sb_free_func_t free_func)
 void
 sb_slist_free(sb_slist_t *l)
 {
-    while (l != NULL) {
-        sb_slist_t *tmp = l->next;
-        free(l);
-        l = tmp;
-    }
+    sb_slist_free_full(l, NULL);
 }
 
 
 size_t
 sb_slist_length(sb_slist_t *l)
 {
+    if (l == NULL)
+        return 0;
     size_t i;
     sb_slist_t *tmp;
     for (tmp = l, i = 0; tmp != NULL; tmp = tmp->next, i++);
