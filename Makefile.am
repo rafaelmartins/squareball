@@ -15,6 +15,7 @@ AM_DISTCHECK_CONFIGURE_FLAGS = \
 EXTRA_DIST = \
 	build-aux/git-version-gen \
 	$(top_srcdir)/.version \
+	doc/00_index.md \
 	autogen.sh \
 	LICENSE \
 	README.md \
