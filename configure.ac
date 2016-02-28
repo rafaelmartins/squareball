@@ -109,6 +109,7 @@ AC_CONFIG_FILES([
   Makefile
   Doxyfile
   squareball.pc
+  squareball.spec
 ])
 AC_OUTPUT
 

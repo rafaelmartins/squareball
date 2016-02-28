@@ -57,5 +57,8 @@ squareball-*.tar.*
 /Doxyfile
 /doc/build
 
+# RPM spec file
+/squareball.spec
+
 # git-version-gen
 /.version

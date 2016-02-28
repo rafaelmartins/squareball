@@ -1,0 +1,88 @@
+Name: @PACKAGE_NAME@
+Version: @PACKAGE_VERSION@
+Release: 1%{?dist}
+License: BSD
+Group: System Environment/Libraries
+Summary: A general-purpose library for C99
+URL: @PACKAGE_URL@
+Source0: https://github.com/rafaelmartins/squareball/releases/download/v%{version}/squareball-%{version}.tar.xz
+
+BuildRequires: pkgconfig
+BuildRequires: libcmocka-devel
+BuildRequires: doxygen
+
+%description
+squareball is a general-purpose library for C99.
+
+%package devel
+Summary: Development files for package squareball
+Group: Development/Libraries
+Requires: %{name}%{?_isa} = %{version}-%{release}
+
+%description devel
+This contains development files for package squareball, such as headers and
+pkgconfig files.
+
+%package doc
+Summary: API documentation for package squareball
+Group: Development/Libraries
+Requires: %{name} = %{version}-%{release}
+BuildArch: noarch
+
+%description doc
+This contains API documentation for package squareball.
+
+%package static
+Summary: Static libraries for package squareball
+Group: Development/Libraries
+Requires: %{name}-devel = %{version}-%{release}
+
+%description static
+This contains static libraries for package squareball.
+
+
+%prep
+%setup -q
+
+
+%build
+%configure --disable-silent-rules
+make %{?_smp_mflags}
+
+
+%install
+rm -rf $RPM_BUILD_ROOT
+%make_install
+make docs
+rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
+
+
+%check
+make check
+
+
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+
+
+%files
+%{_libdir}/libsquareball.so.*
+%doc README.md
+%license LICENSE
+
+%files devel
+%{_includedir}/squareball.h
+%{_includedir}/squareball/*
+%{_libdir}/libsquareball.so
+%{_libdir}/pkgconfig/squareball.pc
+
+%files doc
+%doc doc/build/html/*
+
+%files static
+%{_libdir}/libsquareball.a
+
+
+%changelog
+* Sun Feb 28 2016 Rafael G. Martins <rafael@rafaelmartins.eng.br> 0.1-1
+- Initial package.
