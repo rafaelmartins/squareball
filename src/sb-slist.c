@@ -49,7 +49,7 @@ sb_slist_free_full(sb_slist_t *l, sb_free_func_t free_func)
 {
     while (l != NULL) {
         sb_slist_t *tmp = l->next;
-        if (free_func != NULL)
+        if ((free_func != NULL) && (l->data != NULL))
             free_func(l->data);
         free(l);
         l = tmp;
