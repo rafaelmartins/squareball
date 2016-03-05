@@ -257,6 +257,7 @@ clean-local:
 
 if BUILD_DOCS
 docs: clean-local Doxyfile
+	-mkdir -p $(top_builddir)/doc/build
 	$(DOXYGEN) Doxyfile
 endif
 
