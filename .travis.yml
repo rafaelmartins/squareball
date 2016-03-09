@@ -34,4 +34,6 @@ deploy:
   on:
     repo: rafaelmartins/squareball
     branch: master
-    condition: "$CC = gcc -a $TARGET = dist*"
+    condition:
+      - $CC = gcc
+      - $TARGET = dist*
