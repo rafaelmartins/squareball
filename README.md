@@ -1,6 +1,6 @@
 # squareball
 
-[![Build Status](https://jenkins.rgm.io/buildStatus/icon?job=squareball-tests)](https://jenkins.rgm.io/job/squareball-tests/)
+[![Build Status](https://travis-ci.org/rafaelmartins/squareball.svg?branch=master)](https://travis-ci.org/rafaelmartins/squareball)
 
 A general-purpose library for C99.
 
