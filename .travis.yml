@@ -34,4 +34,4 @@ deploy:
   on:
     repo: rafaelmartins/squareball
     branch: master
-    condition: $CC = gcc
+    condition: "$CC = gcc -a $TARGET = xdist*"
