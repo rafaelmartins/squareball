@@ -1,11 +1,11 @@
 Name: @PACKAGE_NAME@
-Version: @PACKAGE_VERSION@
+Version: @RPM_VERSION@
 Release: 1%{?dist}
 License: BSD
 Group: System Environment/Libraries
 Summary: A general-purpose library for C99
 URL: @PACKAGE_URL@
-Source0: https://github.com/rafaelmartins/squareball/releases/download/v%{version}/squareball-%{version}.tar.xz
+Source0: https://github.com/rafaelmartins/squareball/releases/download/v@PACKAGE_VERSION@/squareball-@PACKAGE_VERSION@.tar.xz
 
 BuildRequires: pkgconfig
 BuildRequires: libcmocka-devel
@@ -42,7 +42,7 @@ This contains static libraries for package squareball.
 
 
 %prep
-%setup -q
+%setup -q -n @PACKAGE_NAME@-@PACKAGE_VERSION@
 
 
 %build

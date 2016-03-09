@@ -262,6 +262,17 @@ docs: clean-local Doxyfile
 endif
 
 
+## Helpers: dist-srpm
+
+if USE_RPMBUILD
+dist-srpm: squareball.spec dist-xz
+	$(RPMBUILD) \
+		--define "_srcrpmdir $(top_builddir)" \
+		--define "_sourcedir $(top_builddir)" \
+		-bs squareball.spec
+endif
+
+
 ## Helpers: git-version-gen
 
 $(top_srcdir)/.version:

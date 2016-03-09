@@ -1,0 +1,37 @@
+dist: trusty
+sudo: required
+language: c
+
+addons:
+  apt:
+    packages:
+      - libcmocka-dev
+      - rpm
+      - valgrind
+
+compiler:
+  - clang
+  - gcc
+
+env:
+  - TARGET=valgrind
+  - TARGET=distcheck
+  - TARGET=dist-srpm
+
+matrix:
+  exclude:
+    - compiler: clang
+      env: TARGET=dist-srpm
+
+before_script: ./autogen.sh
+
+script: ./build-aux/travis-build.sh
+
+deploy:
+  provider: script
+  script: ./build-aux/travis-deploy.sh
+  skip_cleanup: true
+  on:
+    repo: rafaelmartins/squareball
+    branch: master
+    condition: $CC = gcc
