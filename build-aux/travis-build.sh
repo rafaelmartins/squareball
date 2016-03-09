@@ -11,8 +11,7 @@ pushd build > /dev/null
     CFLAGS="-Wall -g" \
     --enable-tests \
     --enable-valgrind \
-    --disable-silent-rules \
-    ${CONFIGURE_ARGS}
+    --disable-silent-rules
 
 popd > /dev/null
 
