@@ -12,7 +12,6 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <stdarg.h>
 
 /**
  * @file squareball/sb-string.h
