@@ -18,6 +18,7 @@
  * @{
  */
 
+#include <squareball/sb-error.h>
 #include <squareball/sb-mem.h>
 #include <squareball/sb-slist.h>
 #include <squareball/sb-strfuncs.h>
