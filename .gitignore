@@ -47,6 +47,7 @@ Makefile.in
 /examples/hello_trie
 
 # tests
+/tests/check_error
 /tests/check_slist
 /tests/check_strfuncs
 /tests/check_string

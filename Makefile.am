@@ -30,6 +30,7 @@ if BUNDLE_ME
 
 noinst_HEADERS = \
 	src/squareball.h \
+	src/squareball/sb-error.h \
 	src/squareball/sb-mem.h \
 	src/squareball/sb-slist.h \
 	src/squareball/sb-strfuncs.h \
@@ -49,6 +50,7 @@ include_HEADERS = \
 	$(NULL)
 
 pkginclude_HEADERS = \
+	src/squareball/sb-error.h \
 	src/squareball/sb-mem.h \
 	src/squareball/sb-slist.h \
 	src/squareball/sb-strfuncs.h \
@@ -77,6 +79,7 @@ check_PROGRAMS = \
 
 
 libsquareball_la_SOURCES = \
+	src/sb-error.c \
 	src/sb-mem.c \
 	src/sb-slist.c \
 	src/sb-strfuncs.c \
@@ -165,10 +168,29 @@ endif
 if USE_CMOCKA
 
 check_PROGRAMS += \
+	tests/check_error \
 	tests/check_slist \
 	tests/check_strfuncs \
 	tests/check_string \
 	tests/check_trie \
+	$(NULL)
+
+tests_check_error_SOURCES = \
+	tests/check_error.c \
+	$(NULL)
+
+tests_check_error_CFLAGS = \
+	$(CMOCKA_CFLAGS) \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+tests_check_error_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+tests_check_error_LDADD = \
+	$(CMOCKA_LIBS) \
+	libsquareball.la \
 	$(NULL)
 
 tests_check_slist_SOURCES = \
