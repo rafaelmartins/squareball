@@ -23,6 +23,8 @@
  * - \c SB_ERROR_FILE_OPEN
  * - \c SB_ERROR_FILE_READ
  *
+ * @example hello_file_read.c
+ *
  * @param path  File path.
  * @param len   Location to store length of file, in bytes, or \c NULL.
  * @param err   Return location for a \ref sb_error_t, or NULL.
@@ -39,6 +41,8 @@ char* sb_file_get_contents(const char *path, size_t *len, sb_error_t **err);
  * - \c SB_ERROR_FILE_OPEN
  * - \c SB_ERROR_FILE_WRITE
  *
+ * @example hello_file_write.c
+ *
  * @param path      File path.
  * @param contents  Content.
  * @param len       Content length.
@@ -54,6 +58,8 @@ void sb_file_put_contents(const char *path, const char* contents, size_t len,
  * This function can generate errors with the following codes:
  *
  * - \c SB_ERROR_DIR_CREATE
+ *
+ * @example hello_dir_create.c
  *
  * @param path  Directory path.
  * @param err   Return location for a \ref sb_error_t, or NULL.
