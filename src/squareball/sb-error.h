@@ -52,7 +52,10 @@ typedef struct {
  * error codes.
  */
 enum {
-    SB_ERROR_FOO = -1,  // FIXME when we have some real error :)
+    SB_ERROR_FILE_OPEN = -1,
+    SB_ERROR_FILE_READ = -2,
+    SB_ERROR_FILE_WRITE = -3,
+    SB_ERROR_DIR_CREATE = -4,
 };
 
 /**

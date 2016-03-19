@@ -42,6 +42,9 @@ Makefile.in
 !/m4/pkg.m4
 
 # examples
+/examples/hello_dir_create
+/examples/hello_file_read
+/examples/hello_file_write
 /examples/hello_slist
 /examples/hello_string
 /examples/hello_trie

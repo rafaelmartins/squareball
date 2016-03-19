@@ -31,6 +31,7 @@ if BUNDLE_ME
 noinst_HEADERS = \
 	src/squareball.h \
 	src/squareball/sb-error.h \
+	src/squareball/sb-file.h \
 	src/squareball/sb-mem.h \
 	src/squareball/sb-slist.h \
 	src/squareball/sb-strfuncs.h \
@@ -51,6 +52,7 @@ include_HEADERS = \
 
 pkginclude_HEADERS = \
 	src/squareball/sb-error.h \
+	src/squareball/sb-file.h \
 	src/squareball/sb-mem.h \
 	src/squareball/sb-slist.h \
 	src/squareball/sb-strfuncs.h \
@@ -80,6 +82,7 @@ check_PROGRAMS = \
 
 libsquareball_la_SOURCES = \
 	src/sb-error.c \
+	src/sb-file.c \
 	src/sb-mem.c \
 	src/sb-slist.c \
 	src/sb-strfuncs.c \
@@ -107,9 +110,60 @@ endif
 if BUILD_EXAMPLES
 
 noinst_PROGRAMS += \
+	examples/hello_dir_create \
+	examples/hello_file_read \
+	examples/hello_file_write \
 	examples/hello_slist \
 	examples/hello_string \
 	examples/hello_trie \
+	$(NULL)
+
+examples_hello_dir_create_SOURCES = \
+	examples/hello_dir_create.c \
+	$(NULL)
+
+examples_hello_dir_create_CFLAGS = \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+examples_hello_dir_create_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+examples_hello_dir_create_LDADD= \
+	libsquareball.la \
+	$(NULL)
+
+examples_hello_file_read_SOURCES = \
+	examples/hello_file_read.c \
+	$(NULL)
+
+examples_hello_file_read_CFLAGS = \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+examples_hello_file_read_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+examples_hello_file_read_LDADD= \
+	libsquareball.la \
+	$(NULL)
+
+examples_hello_file_write_SOURCES = \
+	examples/hello_file_write.c \
+	$(NULL)
+
+examples_hello_file_write_CFLAGS = \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+examples_hello_file_write_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+examples_hello_file_write_LDADD= \
+	libsquareball.la \
 	$(NULL)
 
 examples_hello_slist_SOURCES = \

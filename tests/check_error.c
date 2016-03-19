@@ -28,7 +28,7 @@ test_error_new(void **state)
 static void
 test_error_new_internal(void **state)
 {
-    sb_error_t *error = sb_error_new(SB_ERROR_FOO, "bola %s");
+    sb_error_t *error = sb_error_new(SB_ERROR_FILE_OPEN, "bola %s");
     assert_non_null(error);
     assert_int_equal(error->code, -1);
     assert_string_equal(error->msg, "bola %s");
