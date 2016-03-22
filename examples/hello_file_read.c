@@ -26,6 +26,7 @@ main(int argc, char **argv)
 
     if (err != NULL) {
         fprintf(stderr, "error: %s\n", err->msg);
+        sb_error_free(err);
         return 1;
     }
 
@@ -33,6 +34,8 @@ main(int argc, char **argv)
     printf("Size: %zu\n", len);
     printf("--------------------------------------------------------------\n");
     printf("%*s", (int) len, contents);
+
+    free(contents);
 
     return 0;
 }

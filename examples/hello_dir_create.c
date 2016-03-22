@@ -25,6 +25,7 @@ main(int argc, char **argv)
 
     if (err != NULL) {
         fprintf(stderr, "error: %s\n", err->msg);
+        sb_error_free(err);
         return 1;
     }
 
