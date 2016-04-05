@@ -33,7 +33,7 @@ deploy:
   skip_cleanup: true
   on:
     repo: rafaelmartins/squareball
-    branch: master
     condition:
       - $CC = gcc
       - $TARGET = dist*
+      - $TRAVIS_BRANCH = {master,v*}
