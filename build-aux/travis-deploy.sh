@@ -12,7 +12,7 @@ if [[ "x${TRAVIS_BRANCH}" != "master" ]] && [[ "x${TRAVIS_TAG}" != xv* ]]; then
     exit 0
 fi
 
-if [[ "x${CC}" != "xgcc" ]] && [[ "x${TARGET}" != dist* ]]; then
+if [[ "x${CC}" != "xgcc" ]] && [[ "x${TARGET}" != xdist* ]]; then
     echo "Invalid target for deploy. skipping ..."
     exit 0
 fi
