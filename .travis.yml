@@ -33,6 +33,8 @@ deploy:
   skip_cleanup: true
   on:
     repo: rafaelmartins/squareball
+    branch: master
+    tags: true
     condition:
       - $CC = gcc
       - $TARGET = dist*
