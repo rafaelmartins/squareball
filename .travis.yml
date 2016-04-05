@@ -36,4 +36,3 @@ deploy:
     condition:
       - $CC = gcc
       - $TARGET = dist*
-      - $TRAVIS_BRANCH = {master,v*}
