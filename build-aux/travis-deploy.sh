@@ -8,7 +8,7 @@ if [[ "x${TRAVIS_PULL_REQUEST}" != "xfalse" ]]; then
 fi
 
 if [[ "x${TRAVIS_BRANCH}" != "master" ]] && [[ "x${TRAVIS_TAG}" != xv* ]]; then
-    echo "This isn't master branch nor a valid tag. skipping deploy ..."
+    echo "This isn't master branch nor a valid tag. skipping deploy ... x${TRAVIS_BRANCH} x${TRAVIS_TAG}"
     exit 0
 fi
 
