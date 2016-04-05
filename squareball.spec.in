@@ -84,5 +84,8 @@ make check
 
 
 %changelog
+* Tue Apr 5 2016 Rafael G. Martins <rafael@rafaelmartins.eng.br> 0.2.0-1
+- New release.
+
 * Sun Feb 28 2016 Rafael G. Martins <rafael@rafaelmartins.eng.br> 0.1-1
 - Initial package.
