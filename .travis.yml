@@ -31,10 +31,10 @@ deploy:
   provider: script
   script: ./build-aux/travis-deploy.sh
   skip_cleanup: true
+  all_branches: true
   on:
     repo: rafaelmartins/squareball
-    branch: master
-    tags: true
     condition:
       - $CC = gcc
       - $TARGET = dist*
+      - $TRAVIS_BRANCH = v* || $TRAVIS_BRANCH = master
