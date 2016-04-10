@@ -402,6 +402,38 @@ test_trie_foreach(void **state)
 }
 
 
+static void
+mock_foreach_v2(const char *key, void *data, void *user_data)
+{
+    assert_string_equal(user_data, "foo");
+    assert_string_equal(key, expected_keys[counter]);
+    assert_string_equal((char*) data, expected_datas[counter++]);
+}
+
+
+static void
+test_trie_foreach_v2(void **state)
+{
+    sb_trie_t *trie = sb_trie_new(free);
+
+    sb_trie_insert(trie, "chu", sb_strdup("nda"));
+    sb_trie_insert(trie, "bola", sb_strdup("guda"));
+    sb_trie_insert(trie, "bote", sb_strdup("aba"));
+    sb_trie_insert(trie, "bo", sb_strdup("haha"));
+    sb_trie_insert(trie, "copa", sb_strdup("bu"));
+    sb_trie_insert(trie, "b", sb_strdup("c"));
+    sb_trie_insert(trie, "test", sb_strdup("asd"));
+
+    counter = 0;
+    sb_trie_foreach_v2(trie, mock_foreach_v2, "foo");
+    sb_trie_foreach_v2(NULL, mock_foreach_v2, "foo");
+    sb_trie_foreach_v2(trie, NULL, "foo");
+    sb_trie_foreach_v2(NULL, NULL, "foo");
+
+    sb_trie_free(trie);
+}
+
+
 int
 main(void)
 {
@@ -413,6 +445,7 @@ main(void)
         unit_test(test_trie_lookup),
         unit_test(test_trie_size),
         unit_test(test_trie_foreach),
+        unit_test(test_trie_foreach_v2),
     };
     return run_tests(tests);
 }

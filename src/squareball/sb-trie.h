@@ -35,6 +35,12 @@ typedef struct _sb_trie_t sb_trie_t;
 typedef void (*sb_trie_foreach_func_t)(const char *key, void *data);
 
 /**
+ * Trie foreach callback function type with user data.
+ */
+typedef void (*sb_trie_foreach_v2_func_t)(const char *key, void *data, 
+    void *user_data);
+
+/**
  * Function that creates a new trie.
  *
  * @param free_func  The \ref sb_free_func_t to be used to free the memory
@@ -90,6 +96,16 @@ size_t sb_trie_size(sb_trie_t *trie);
  * @param func  The function that should be called for each element.
  */
 void sb_trie_foreach(sb_trie_t *trie, sb_trie_foreach_func_t func);
+
+/**
+ * Function that calls a given function for each element of a trie.
+ *
+ * @param trie       The trie.
+ * @param func       The function that should be called for each element.
+ * @param user_data  Pointer to user data to be passed to \c func.
+ */
+void sb_trie_foreach_v2(sb_trie_t *trie, sb_trie_foreach_v2_func_t func,
+    void *user_data);
 
 /** @} */
 
