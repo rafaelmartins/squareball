@@ -16,6 +16,7 @@ EXTRA_DIST = \
 	build-aux/git-version-gen \
 	$(top_srcdir)/.version \
 	doc/00_index.md \
+	examples/config.ini \
 	autogen.sh \
 	LICENSE \
 	README.md \
@@ -30,6 +31,8 @@ if BUNDLE_ME
 
 noinst_HEADERS = \
 	src/squareball.h \
+	src/squareball/sb-configparser.h \
+	src/squareball/sb-configparser-private.h \
 	src/squareball/sb-error.h \
 	src/squareball/sb-file.h \
 	src/squareball/sb-mem.h \
@@ -51,6 +54,7 @@ include_HEADERS = \
 	$(NULL)
 
 pkginclude_HEADERS = \
+	src/squareball/sb-configparser.h \
 	src/squareball/sb-error.h \
 	src/squareball/sb-file.h \
 	src/squareball/sb-mem.h \
@@ -61,6 +65,7 @@ pkginclude_HEADERS = \
 	$(NULL)
 
 noinst_HEADERS = \
+	src/squareball/sb-configparser-private.h \
 	src/squareball/sb-trie-private.h \
 	$(NULL)
 
@@ -81,6 +86,7 @@ check_PROGRAMS = \
 
 
 libsquareball_la_SOURCES = \
+	src/sb-configparser.c \
 	src/sb-error.c \
 	src/sb-file.c \
 	src/sb-mem.c \
@@ -110,12 +116,29 @@ endif
 if BUILD_EXAMPLES
 
 noinst_PROGRAMS += \
+	examples/hello_configparser \
 	examples/hello_dir_create \
 	examples/hello_file_read \
 	examples/hello_file_write \
 	examples/hello_slist \
 	examples/hello_string \
 	examples/hello_trie \
+	$(NULL)
+
+examples_hello_configparser_SOURCES = \
+	examples/hello_configparser.c \
+	$(NULL)
+
+examples_hello_configparser_CFLAGS = \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+examples_hello_configparser_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+examples_hello_configparser_LDADD= \
+	libsquareball.la \
 	$(NULL)
 
 examples_hello_dir_create_SOURCES = \
@@ -222,11 +245,30 @@ endif
 if USE_CMOCKA
 
 check_PROGRAMS += \
+	tests/check_configparser \
 	tests/check_error \
 	tests/check_slist \
 	tests/check_strfuncs \
 	tests/check_string \
 	tests/check_trie \
+	$(NULL)
+
+tests_check_configparser_SOURCES = \
+	tests/check_configparser.c \
+	$(NULL)
+
+tests_check_configparser_CFLAGS = \
+	$(CMOCKA_CFLAGS) \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+tests_check_configparser_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+tests_check_configparser_LDADD = \
+	$(CMOCKA_LIBS) \
+	libsquareball.la \
 	$(NULL)
 
 tests_check_error_SOURCES = \
