@@ -167,45 +167,7 @@ sb_trie_size(sb_trie_t *trie)
 
 static void
 sb_trie_foreach_node(sb_trie_node_t *node, sb_string_t *str,
-    sb_trie_foreach_func_t func)
-{
-    if (node == NULL || str == NULL || func == NULL)
-        return;
-
-    if (node->key == '\0') {
-        char *tmp = sb_string_free(str, false);
-        func(tmp, node->data);
-        free(tmp);
-    }
-
-    if (node->child != NULL) {
-        sb_string_t *child = sb_string_dup(str);
-        child = sb_string_append_c(child, node->key);
-        sb_trie_foreach_node(node->child, child, func);
-    }
-
-    if (node->next != NULL)
-        sb_trie_foreach_node(node->next, str, func);
-
-    if (node->child != NULL && node->next == NULL)
-        sb_string_free(str, true);
-}
-
-
-void
-sb_trie_foreach(sb_trie_t *trie, sb_trie_foreach_func_t func)
-{
-    if (trie == NULL || trie->root == NULL || func == NULL)
-        return;
-
-    sb_string_t *str = sb_string_new();
-    sb_trie_foreach_node(trie->root, str, func);
-}
-
-
-static void
-sb_trie_foreach_node_v2(sb_trie_node_t *node, sb_string_t *str,
-    sb_trie_foreach_v2_func_t func, void *user_data)
+    sb_trie_foreach_func_t func, void *user_data)
 {
     if (node == NULL || str == NULL || func == NULL)
         return;
@@ -219,11 +181,11 @@ sb_trie_foreach_node_v2(sb_trie_node_t *node, sb_string_t *str,
     if (node->child != NULL) {
         sb_string_t *child = sb_string_dup(str);
         child = sb_string_append_c(child, node->key);
-        sb_trie_foreach_node_v2(node->child, child, func, user_data);
+        sb_trie_foreach_node(node->child, child, func, user_data);
     }
 
     if (node->next != NULL)
-        sb_trie_foreach_node_v2(node->next, str, func, user_data);
+        sb_trie_foreach_node(node->next, str, func, user_data);
 
     if (node->child != NULL && node->next == NULL)
         sb_string_free(str, true);
@@ -231,12 +193,12 @@ sb_trie_foreach_node_v2(sb_trie_node_t *node, sb_string_t *str,
 
 
 void
-sb_trie_foreach_v2(sb_trie_t *trie, sb_trie_foreach_v2_func_t func,
+sb_trie_foreach(sb_trie_t *trie, sb_trie_foreach_func_t func,
     void *user_data)
 {
     if (trie == NULL || trie->root == NULL || func == NULL)
         return;
 
     sb_string_t *str = sb_string_new();
-    sb_trie_foreach_node_v2(trie->root, str, func, user_data);
+    sb_trie_foreach_node(trie->root, str, func, user_data);
 }

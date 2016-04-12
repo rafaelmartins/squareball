@@ -12,7 +12,7 @@
 
 
 static void
-foreach_callback(const char *key, void *data)
+foreach_callback(const char *key, void *data, void *user_data)
 {
     printf("    %s: %s\n", key, (char*) data);
 }
@@ -32,7 +32,7 @@ main(int argc, char **argv)
         (char*) sb_trie_lookup(t, "bola"));
 
     printf("All available keys:\n");
-    sb_trie_foreach(t, foreach_callback);
+    sb_trie_foreach(t, foreach_callback, NULL);
 
     sb_trie_free(t);
     return 0;
