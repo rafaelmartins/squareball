@@ -188,11 +188,11 @@ test_str_replace(void **state)
 static void
 test_strv_join(void **state)
 {
-    const char *pieces[] = {"guda","bola", "chunda", NULL};
+    char *pieces[] = {"guda","bola", "chunda", NULL};
     char *str = sb_strv_join(pieces, ":");
     assert_string_equal(str, "guda:bola:chunda");
     free(str);
-    const char *pieces2[] = {NULL};
+    char *pieces2[] = {NULL};
     str = sb_strv_join(pieces2, ":");
     assert_string_equal(str, "");
     free(str);
