@@ -359,6 +359,65 @@ test_config_section_multiple_sections(void **state)
 }
 
 
+static void
+test_config_error_start(void **state)
+{
+    const char *a =
+        "asd\n"
+        "[foo]";
+    sb_error_t *err = NULL;
+    sb_config_t *c = sb_config_parse(a, strlen(a), &err);
+    assert_non_null(err);
+    assert_null(c);
+    assert_int_equal(err->code, -10);
+    assert_string_equal(err->msg, "File must start with section");
+    sb_error_free(err);
+}
+
+
+static void
+test_config_error_section_with_newline(void **state)
+{
+    const char *a =
+        "[foo\nbar]";
+    sb_error_t *err = NULL;
+    sb_config_t *c = sb_config_parse(a, strlen(a), &err);
+    assert_non_null(err);
+    assert_null(c);
+    assert_int_equal(err->code, -10);
+    assert_string_equal(err->msg, "Section names can't have new lines");
+    sb_error_free(err);
+}
+
+
+static void
+test_config_error_key_without_value(void **state)
+{
+    const char *a =
+        "[foobar]\n"
+        "asd = 12\n"
+        "foo";
+    sb_error_t *err = NULL;
+    sb_config_t *c = sb_config_parse(a, strlen(a), &err);
+    assert_non_null(err);
+    assert_null(c);
+    assert_int_equal(err->code, -10);
+    assert_string_equal(err->msg, "Key without value: foo");
+    sb_error_free(err);
+    a =
+        "[foobar]\n"
+        "asd = 12\n"
+        "foo\n";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), &err);
+    assert_non_null(err);
+    assert_null(c);
+    assert_int_equal(err->code, -10);
+    assert_string_equal(err->msg, "Key without value: foo");
+    sb_error_free(err);
+}
+
+
 int
 main(void)
 {
@@ -368,6 +427,9 @@ main(void)
         unit_test(test_config_section),
         unit_test(test_config_section_multiple_keys),
         unit_test(test_config_section_multiple_sections),
+        unit_test(test_config_error_start),
+        unit_test(test_config_error_section_with_newline),
+        unit_test(test_config_error_key_without_value),
     };
     return run_tests(tests);
 }

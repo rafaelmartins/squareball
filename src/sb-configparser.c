@@ -106,14 +106,17 @@ sb_config_parse(const char *src, size_t src_len, sb_error_t **err)
                     state = CONFIG_SECTION_VALUE_START;
                     break;
                 }
-                if (c != '\r' && c != '\n')
+                if (c != '\r' && c != '\n' && !is_last)
                     break;
                 // key without value, should we support it?
                 if (err != NULL) {
-                    key = sb_strndup(src + start, current - start);
+                    size_t end = is_last && c != '\n' && c != '\r' ? src_len :
+                        current;
+                    key = sb_strndup(src + start, end - start);
                     *err = sb_error_new_printf(SB_ERROR_CONFIGPARSER,
                         "Key without value: %s", key);
                     free(key);
+                    key = NULL;
                 }
                 break;
 
