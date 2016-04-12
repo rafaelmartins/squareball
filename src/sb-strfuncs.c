@@ -189,7 +189,7 @@ sb_str_replace(const char *str, const char search, const char *replace)
     char **pieces = sb_str_split(str, search, 0);
     if (pieces == NULL)
         return NULL;
-    char* rv = sb_strv_join((const char**) pieces, replace);
+    char* rv = sb_strv_join(pieces, replace);
     sb_strv_free(pieces);
     if (rv == NULL)
         return sb_strdup(str);
@@ -209,7 +209,7 @@ sb_strv_free(char **strv)
 
 
 char*
-sb_strv_join(const char **strv, const char *separator)
+sb_strv_join(char **strv, const char *separator)
 {
     if (strv == NULL || separator == NULL)
         return NULL;

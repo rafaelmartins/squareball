@@ -147,7 +147,7 @@ void sb_strv_free(char **strv);
  * @param separator  The string to be used as separator.
  * @return           A newly-allocated string.
  */
-char* sb_strv_join(const char **strv, const char *separator);
+char* sb_strv_join(char **strv, const char *separator);
 
 /**
  * Function that returns the number of elements in a NULL-terminated array of
