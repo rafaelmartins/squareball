@@ -160,12 +160,12 @@ sb_str_strip(char *str)
 
 
 char**
-sb_str_split(const char *str, char c, unsigned int max_pieces)
+sb_str_split(const char *str, char c, size_t max_pieces)
 {
     if (str == NULL)
         return NULL;
     char **rv = sb_malloc(sizeof(char*));
-    unsigned int i, start = 0, count = 0;
+    size_t i, start = 0, count = 0;
     for (i = 0; i < strlen(str) + 1; i++) {
         if (str[0] == '\0')
             break;

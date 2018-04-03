@@ -367,7 +367,7 @@ test_trie_size(void **state)
 }
 
 
-static unsigned int counter;
+static size_t counter;
 static char *expected_keys[] = {"chu", "copa", "bola", "bote", "bo", "b", "test"};
 static char *expected_datas[] = {"nda", "bu", "guda", "aba", "haha", "c", "asd"};
 

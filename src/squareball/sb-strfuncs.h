@@ -118,7 +118,7 @@ char* sb_str_strip(char *str);
  * @return            An NULL-terminated array of strings, that should be
  *                    free'd with \ref sb_strv_free.
  */
-char** sb_str_split(const char *str, char c, unsigned int max_pieces);
+char** sb_str_split(const char *str, char c, size_t max_pieces);
 
 /**
  * Function that replaces all the occurences of a given character in a string

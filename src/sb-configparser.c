@@ -178,7 +178,7 @@ sb_config_list_sections(sb_config_t *config)
 
     char **rv = sb_malloc(sizeof(char*) * (sb_slist_length(l) + 1));
 
-    unsigned int i = 0;
+    size_t i = 0;
     for (sb_slist_t *tmp = l; tmp != NULL; tmp = tmp->next, i++)
         rv[i] = tmp->data;
     rv[i] = NULL;
@@ -204,7 +204,7 @@ sb_config_list_keys(sb_config_t *config, const char *section)
 
     char **rv = sb_malloc(sizeof(char*) * (sb_slist_length(l) + 1));
 
-    unsigned int i = 0;
+    size_t i = 0;
     for (sb_slist_t *tmp = l; tmp != NULL; tmp = tmp->next, i++)
         rv[i] = tmp->data;
     rv[i] = NULL;

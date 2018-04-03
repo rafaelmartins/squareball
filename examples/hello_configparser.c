@@ -45,10 +45,10 @@ main(int argc, char **argv)
     printf("Sections: %s\n\n", sections_str);
     free(sections_str);
 
-    for (unsigned int i = 0; sections[i] != NULL; i++) {
+    for (size_t i = 0; sections[i] != NULL; i++) {
         printf("Keys for '%s':\n", sections[i]);
         char **keys = sb_config_list_keys(t, sections[i]);
-        for (unsigned int j = 0; keys[j] != NULL; j++) {
+        for (size_t j = 0; keys[j] != NULL; j++) {
             printf("    '%s' => '%s'\n", keys[j],
                 sb_config_get(t, sections[i], keys[j]));
         }
