@@ -39,6 +39,7 @@ default_configure() {
         --disable-bundleme \
         --disable-valgrind \
         --enable-tests \
+        --enable-examples \
         "$@"
     popd > /dev/null
 }

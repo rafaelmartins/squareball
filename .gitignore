@@ -62,6 +62,7 @@ Makefile.in
 
 # tarballs
 squareball-*.tar.*
+squareball-*.zip
 
 # documentation
 /Doxyfile

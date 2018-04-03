@@ -1,6 +1,5 @@
 build() {
-    default_configure \
-        --enable-examples
+    default_configure
     make distcheck
 }
 
