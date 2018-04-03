@@ -1,30 +1,73 @@
-dist: trusty
 sudo: required
 language: c
 
-addons:
-  apt:
-    packages:
-      - libcmocka-dev
-      - rpm
-      - valgrind
-
-compiler:
-  - clang
-  - gcc
-
-env:
-  - TARGET=valgrind
-  - TARGET=distcheck
-  - TARGET=dist-srpm
-
 matrix:
-  exclude:
+  include:
+    - compiler: gcc
+      env:
+        - TARGET=distcheck
+      addons:
+        apt:
+          packages:
+            - realpath
+            - libcmocka-dev
     - compiler: clang
-      env: TARGET=dist-srpm
+      env:
+        - TARGET=distcheck
+      addons:
+        apt:
+          packages:
+            - realpath
+            - libcmocka-dev
+    - os: osx
+      compiler: clang
+      env:
+        - TARGET=distcheck
+    - compiler: gcc
+      env:
+        - TARGET=valgrind
+      addons:
+        apt:
+          packages:
+            - realpath
+            - libcmocka-dev
+            - valgrind
+    - compiler: clang
+      env:
+        - TARGET=valgrind
+      addons:
+        apt:
+          packages:
+            - realpath
+            - libcmocka-dev
+            - valgrind
+    - compiler: clang
+      env:
+        - TARGET=clang-analyzer
+      addons:
+        apt:
+          packages:
+            - realpath
+            - libcmocka-dev
+    - compiler: gcc
+      env:
+        - TARGET=dist-srpm
+      addons:
+        apt:
+          packages:
+            - realpath
+            - libcmocka-dev
+            - rpm
 
-before_script: ./autogen.sh
+install:
+  - gem install ronn
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install cmocka; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install xz; fi
+
+before_script:
+  - git fetch --unshallow
+  - ./autogen.sh
 
 script:
-  - ./build-aux/travis-build.sh
-  - ./build-aux/travis-deploy.sh
+  - ./.travis/test-run.sh
