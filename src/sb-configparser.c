@@ -17,6 +17,7 @@
 #include <squareball/sb-configparser-private.h>
 #include <squareball/sb-error.h>
 #include <squareball/sb-strfuncs.h>
+#include <squareball/sb-string.h>
 #include <squareball/sb-trie.h>
 
 
@@ -26,7 +27,12 @@ typedef enum {
     CONFIG_SECTION,
     CONFIG_SECTION_KEY,
     CONFIG_SECTION_VALUE_START,
+    CONFIG_SECTION_VALUE_QUOTE,
+    CONFIG_SECTION_VALUE_POST_QUOTED,
     CONFIG_SECTION_VALUE,
+    CONFIG_SECTION_LIST_START,
+    CONFIG_SECTION_LIST_QUOTE,
+    CONFIG_SECTION_LIST_POST_QUOTED,
     CONFIG_SECTION_LIST,
 } sb_configparser_state_t;
 
@@ -73,7 +79,8 @@ sb_config_parse(const char *src, size_t src_len, const char *list_sections[],
 
     char *section_name = NULL;
     char *key = NULL;
-    char *value = NULL;
+    sb_string_t *value = NULL;
+    bool escaped = false;
 
     sb_config_t *rv = sb_malloc(sizeof(sb_config_t));
     rv->root = sb_trie_new((sb_free_func_t) free_section);
@@ -83,6 +90,19 @@ sb_config_parse(const char *src, size_t src_len, const char *list_sections[],
     while (current < src_len) {
         char c = src[current];
         bool is_last = current == src_len - 1;
+
+        if (escaped) {
+            sb_string_append_c(value, c);
+            escaped = false;
+            current++;
+            continue;
+        }
+
+        if (value != NULL && c == '\\') {
+            escaped = true;
+            current++;
+            continue;
+        }
 
         switch (state) {
 
@@ -108,7 +128,9 @@ sb_config_parse(const char *src, size_t src_len, const char *list_sections[],
                             state = CONFIG_SECTION_KEY;
                             break;
                         case CONFIG_SECTION_TYPE_LIST:
-                            state = CONFIG_SECTION_LIST;
+                            state = CONFIG_SECTION_LIST_START;
+                            if (value == NULL)
+                                value = sb_string_new();
                             break;
                     }
                     continue;
@@ -161,6 +183,8 @@ sb_config_parse(const char *src, size_t src_len, const char *list_sections[],
                 if (c == '=') {
                     key = sb_strndup(src + start, current - start);
                     state = CONFIG_SECTION_VALUE_START;
+                    if (value == NULL)
+                        value = sb_string_new();
                     break;
                 }
                 if (c != '\r' && c != '\n' && !is_last)
@@ -178,39 +202,107 @@ sb_config_parse(const char *src, size_t src_len, const char *list_sections[],
                 break;
 
             case CONFIG_SECTION_VALUE_START:
-                start = current;
+                if (c == ' ' || c == '\t' || c == '\f' || c == '\v')
+                    break;
+                if (c == '"') {
+                    state = CONFIG_SECTION_VALUE_QUOTE;
+                    break;
+                }
+                sb_string_append_c(value, c);
                 state = CONFIG_SECTION_VALUE;
+                break;
+
+            case CONFIG_SECTION_VALUE_QUOTE:
+                if (c == '"') {
+                    sb_trie_insert(section->data, sb_str_strip(key),
+                        sb_string_free(value, false));
+                    free(key);
+                    key = NULL;
+                    value = NULL;
+                    state = CONFIG_SECTION_VALUE_POST_QUOTED;
+                    break;
+                }
+                sb_string_append_c(value, c);
+                break;
+
+            case CONFIG_SECTION_VALUE_POST_QUOTED:
+                if (c == ' ' || c == '\t' || c == '\f' || c == '\v')
+                    break;
+                if (c == '\r' || c == '\n' || is_last) {
+                    state = CONFIG_START;
+                    break;
+                }
+                *err = sb_error_new_printf_parser(SB_ERROR_CONFIGPARSER, src,
+                    src_len, current,
+                    "Invalid value for key, should not have anything "
+                    "after quotes.");
                 break;
 
             case CONFIG_SECTION_VALUE:
                 if (c == '\r' || c == '\n' || is_last) {
-                    size_t end = is_last && c != '\n' && c != '\r' ? src_len :
-                        current;
-                    value = sb_strndup(src + start, end - start);
+                    if (is_last && c != '\r' && c != '\n')
+                        sb_string_append_c(value, c);
                     sb_trie_insert(section->data, sb_str_strip(key),
-                        sb_strdup(sb_str_strip(value)));
+                        sb_strdup(sb_str_rstrip(value->str)));
                     free(key);
                     key = NULL;
-                    free(value);
+                    sb_string_free(value, true);
                     value = NULL;
                     state = CONFIG_START;
                     break;
                 }
+                sb_string_append_c(value, c);
+                break;
+
+            case CONFIG_SECTION_LIST_START:
+                if (c == ' ' || c == '\t' || c == '\f' || c == '\v')
+                    break;
+                if (c == '"') {
+                    state = CONFIG_SECTION_LIST_QUOTE;
+                    break;
+                }
+                sb_string_append_c(value, c);
+                state = CONFIG_SECTION_LIST;
+                break;
+
+            case CONFIG_SECTION_LIST_QUOTE:
+                if (c == '"') {
+                    section->data = sb_slist_append(section->data,
+                        sb_string_free(value, false));
+                    value = NULL;
+                    state = CONFIG_SECTION_LIST_POST_QUOTED;
+                    break;
+
+                }
+                sb_string_append_c(value, c);
+                break;
+
+            case CONFIG_SECTION_LIST_POST_QUOTED:
+                if (c == ' ' || c == '\t' || c == '\f' || c == '\v')
+                    break;
+                if (c == '\r' || c == '\n' || is_last) {
+                    state = CONFIG_START;
+                    break;
+                }
+                *err = sb_error_new_printf_parser(SB_ERROR_CONFIGPARSER, src,
+                    src_len, current,
+                    "Invalid value for list item, should not have "
+                    "anything after quotes.");
                 break;
 
             case CONFIG_SECTION_LIST:
                 if (c == '\r' || c == '\n' || is_last) {
-                    size_t end = is_last && c != '\n' && c != '\r' ? src_len :
-                        current;
-                    value = sb_strndup(src + start, end - start);
+                    if (is_last && c != '\r' && c != '\n')
+                        sb_string_append_c(value, c);
                     section->data = sb_slist_append(section->data,
-                        sb_strdup(sb_str_strip(value)));
-                    free(value);
+                        sb_strdup(sb_str_strip(value->str)));
+                    sb_string_free(value, true);
                     value = NULL;
                     state = CONFIG_START;
                     break;
 
                 }
+                sb_string_append_c(value, c);
                 break;
 
         }
@@ -226,7 +318,7 @@ sb_config_parse(const char *src, size_t src_len, const char *list_sections[],
 
     free(section_name);
     free(key);
-    free(value);
+    sb_string_free(value, true);
 
     return rv;
 }
