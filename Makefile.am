@@ -36,6 +36,7 @@ noinst_HEADERS = \
 	src/squareball/sb-error.h \
 	src/squareball/sb-file.h \
 	src/squareball/sb-mem.h \
+	src/squareball/sb-shell.h \
 	src/squareball/sb-slist.h \
 	src/squareball/sb-strfuncs.h \
 	src/squareball/sb-string.h \
@@ -58,6 +59,7 @@ pkginclude_HEADERS = \
 	src/squareball/sb-error.h \
 	src/squareball/sb-file.h \
 	src/squareball/sb-mem.h \
+	src/squareball/sb-shell.h \
 	src/squareball/sb-slist.h \
 	src/squareball/sb-strfuncs.h \
 	src/squareball/sb-string.h \
@@ -90,6 +92,7 @@ libsquareball_la_SOURCES = \
 	src/sb-error.c \
 	src/sb-file.c \
 	src/sb-mem.c \
+	src/sb-shell.c \
 	src/sb-slist.c \
 	src/sb-strfuncs.c \
 	src/sb-string.c \
@@ -120,6 +123,7 @@ noinst_PROGRAMS += \
 	examples/hello_dir_create \
 	examples/hello_file_read \
 	examples/hello_file_write \
+	examples/hello_shell \
 	examples/hello_slist \
 	examples/hello_string \
 	examples/hello_trie \
@@ -189,6 +193,22 @@ examples_hello_file_write_LDADD= \
 	libsquareball.la \
 	$(NULL)
 
+examples_hello_shell_SOURCES = \
+	examples/hello_shell.c \
+	$(NULL)
+
+examples_hello_shell_CFLAGS = \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+examples_hello_shell_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+examples_hello_shell_LDADD= \
+	libsquareball.la \
+	$(NULL)
+
 examples_hello_slist_SOURCES = \
 	examples/hello_slist.c \
 	$(NULL)
@@ -247,6 +267,7 @@ if USE_CMOCKA
 check_PROGRAMS += \
 	tests/check_configparser \
 	tests/check_error \
+	tests/check_shell \
 	tests/check_slist \
 	tests/check_strfuncs \
 	tests/check_string \
@@ -285,6 +306,24 @@ tests_check_error_LDFLAGS = \
 	$(NULL)
 
 tests_check_error_LDADD = \
+	$(CMOCKA_LIBS) \
+	libsquareball.la \
+	$(NULL)
+
+tests_check_shell_SOURCES = \
+	tests/check_shell.c \
+	$(NULL)
+
+tests_check_shell_CFLAGS = \
+	$(CMOCKA_CFLAGS) \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+tests_check_shell_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+tests_check_shell_LDADD = \
 	$(CMOCKA_LIBS) \
 	libsquareball.la \
 	$(NULL)

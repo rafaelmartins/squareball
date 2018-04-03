@@ -46,6 +46,7 @@ Makefile.in
 /examples/hello_dir_create
 /examples/hello_file_read
 /examples/hello_file_write
+/examples/hello_shell
 /examples/hello_slist
 /examples/hello_string
 /examples/hello_trie
@@ -53,6 +54,7 @@ Makefile.in
 # tests
 /tests/check_configparser
 /tests/check_error
+/tests/check_shell
 /tests/check_slist
 /tests/check_strfuncs
 /tests/check_string
