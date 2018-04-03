@@ -132,6 +132,18 @@ char** sb_str_split(const char *str, char c, size_t max_pieces);
 char* sb_str_replace(const char *str, const char search, const char *replace);
 
 /**
+ * Function that returns a pointer to the first occurrence of character in a
+ * string.
+ *
+ * This is somewhat similar to strchr, but respects '\' escaping.
+ *
+ * @param str  The string.
+ * @param c    The character that should be searched in the string.
+ * @return     The pointer to the first occurrence of \c c in \c str.
+ */
+char* sb_str_find(const char *str, char c);
+
+/**
  * Function that frees the memory allocated for a NULL-terminated array of
  * strings.
  *

@@ -197,6 +197,27 @@ sb_str_replace(const char *str, const char search, const char *replace)
 }
 
 
+char*
+sb_str_find(const char *str, char c)
+{
+    // this is somewhat similar to strchr, but respects '\' escaping.
+    if (str == NULL)
+        return NULL;
+    if (c == '\0')
+        return (char*) str + strlen(str);
+    for (size_t i = 0; str[i] != '\0'; i++) {
+        if (str[i] == '\\') {
+            i++;
+            continue;
+        }
+        if (str[i] == c) {
+            return (char*) str + i;
+        }
+    }
+    return NULL;
+}
+
+
 void
 sb_strv_free(char **strv)
 {

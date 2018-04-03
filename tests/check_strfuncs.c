@@ -186,6 +186,18 @@ test_str_replace(void **state)
 
 
 static void
+test_str_find(void **state)
+{
+    assert_null(sb_str_find(NULL, 'c'));
+    assert_string_equal(sb_str_find("bola", 'l'), "la");
+    assert_string_equal(sb_str_find("bo\\lalala", 'l'), "lala");
+    assert_string_equal(sb_str_find("bola", '\0'), "");
+    assert_null(sb_str_find("bola", 'g'));
+    assert_null(sb_str_find("bo\\la", 'l'));
+}
+
+
+static void
 test_strv_join(void **state)
 {
     char *pieces[] = {"guda","bola", "chunda", NULL};
@@ -227,6 +239,7 @@ main(void)
         unit_test(test_str_strip),
         unit_test(test_str_split),
         unit_test(test_str_replace),
+        unit_test(test_str_find),
         unit_test(test_strv_join),
         unit_test(test_strv_length),
     };
