@@ -368,8 +368,8 @@ test_trie_size(void **state)
 
 
 static size_t counter;
-static char *expected_keys[] = {"chu", "copa", "bola", "bote", "bo", "b", "test"};
-static char *expected_datas[] = {"nda", "bu", "guda", "aba", "haha", "c", "asd"};
+static char *expected_keys[] = {"chu", "copa", "bola", "bote", "bo", "b", "test", "testa"};
+static char *expected_datas[] = {"nda", "bu", "guda", "aba", "haha", "c", "asd", "lol"};
 
 static void
 mock_foreach(const char *key, void *data, void *user_data)
@@ -392,13 +392,58 @@ test_trie_foreach(void **state)
     sb_trie_insert(trie, "copa", sb_strdup("bu"));
     sb_trie_insert(trie, "b", sb_strdup("c"));
     sb_trie_insert(trie, "test", sb_strdup("asd"));
+    sb_trie_insert(trie, "testa", sb_strdup("lol"));
 
     counter = 0;
     sb_trie_foreach(trie, mock_foreach, "foo");
     sb_trie_foreach(NULL, mock_foreach, "foo");
     sb_trie_foreach(trie, NULL, "foo");
     sb_trie_foreach(NULL, NULL, "foo");
-    assert_int_equal(counter, 7);
+    assert_int_equal(counter, 8);
+
+    sb_trie_free(trie);
+}
+
+
+static void
+test_trie_inserted_after_prefix(void **state)
+{
+    sb_trie_t *trie = sb_trie_new(free);
+
+    sb_trie_insert(trie, "bola", sb_strdup("guda"));
+    assert_true(trie->root->key == 'b');
+    assert_null(trie->root->data);
+    assert_true(trie->root->child->key == 'o');
+    assert_null(trie->root->child->data);
+    assert_true(trie->root->child->child->key == 'l');
+    assert_null(trie->root->child->child->data);
+    assert_true(trie->root->child->child->child->key == 'a');
+    assert_null(trie->root->child->child->child->data);
+    assert_true(trie->root->child->child->child->child->key == '\0');
+    assert_string_equal(trie->root->child->child->child->child->data, "guda");
+
+    sb_trie_insert(trie, "bolaoo", sb_strdup("asdf"));
+    assert_true(trie->root->key == 'b');
+    assert_null(trie->root->data);
+    assert_true(trie->root->child->key == 'o');
+    assert_null(trie->root->child->data);
+    assert_true(trie->root->child->child->key == 'l');
+    assert_null(trie->root->child->child->data);
+    assert_true(trie->root->child->child->child->key == 'a');
+    assert_null(trie->root->child->child->child->data);
+    assert_true(trie->root->child->child->child->child->key == '\0');
+    assert_string_equal(trie->root->child->child->child->child->data, "guda");
+    assert_non_null(trie->root->child->child->child->child->next);
+    assert_true(trie->root->child->child->child->child->next->key == 'o');
+    assert_null(trie->root->child->child->child->child->next->data);
+    assert_true(trie->root->child->child->child->child->next->child->key == 'o');
+    assert_null(trie->root->child->child->child->child->next->child->data);
+    assert_true(trie->root->child->child->child->child->next->child->child->key == '\0');
+    assert_string_equal(trie->root->child->child->child->child->next->child->child->data, "asdf");
+
+    assert_int_equal(sb_trie_size(trie), 2);
+    assert_string_equal(sb_trie_lookup(trie, "bola"), "guda");
+    assert_string_equal(sb_trie_lookup(trie, "bolaoo"), "asdf");
 
     sb_trie_free(trie);
 }
@@ -415,6 +460,7 @@ main(void)
         unit_test(test_trie_lookup),
         unit_test(test_trie_size),
         unit_test(test_trie_foreach),
+        unit_test(test_trie_inserted_after_prefix),
     };
     return run_tests(tests);
 }

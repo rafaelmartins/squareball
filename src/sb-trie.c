@@ -172,10 +172,8 @@ sb_trie_foreach_node(sb_trie_node_t *node, sb_string_t *str,
     if (node == NULL || str == NULL || func == NULL)
         return;
 
-    if (node->key == '\0') {
+    if (node->key == '\0')
         func(str->str, node->data, user_data);
-        return;
-    }
 
     if (node->child != NULL) {
         sb_string_t *child = sb_string_dup(str);
