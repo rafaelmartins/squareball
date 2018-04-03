@@ -11,6 +11,7 @@
 #include <setjmp.h>
 #include <cmocka.h>
 
+#include <stdlib.h>
 #include <squareball/sb-shell.h>
 
 
