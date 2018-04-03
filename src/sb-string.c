@@ -121,3 +121,23 @@ sb_string_append_printf(sb_string_t *str, const char *format, ...)
     free(tmp);
     return str;
 }
+
+
+sb_string_t*
+sb_string_append_escaped(sb_string_t *str, const char *suffix)
+{
+    if (str == NULL)
+        return NULL;
+    if (suffix == NULL)
+        return str;
+    bool escaped = false;
+    for (size_t i = 0; suffix[i] != '\0'; i++) {
+        if (suffix[i] == '\\' && !escaped) {
+            escaped = true;
+            continue;
+        }
+        escaped = false;
+        str = sb_string_append_c(str, suffix[i]);
+    }
+    return str;
+}

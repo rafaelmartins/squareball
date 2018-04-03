@@ -112,6 +112,16 @@ sb_string_t* sb_string_append_c(sb_string_t *str, char c);
  */
 sb_string_t* sb_string_append_printf(sb_string_t *str, const char *format, ...);
 
+/**
+ * Function that appends a nul-terminated \c suffix to string object, escaping
+ * the suffix before appending.
+ *
+ * @param str     The string object.
+ * @param suffix  The nul-terminated suffix to append to the string object.
+ * @return        The modified string object.
+ */
+sb_string_t* sb_string_append_escaped(sb_string_t *str, const char *suffix);
+
 /** @} */
 
 #endif /* _SQUAREBALL_STRING_H */

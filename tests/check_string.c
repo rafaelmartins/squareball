@@ -263,6 +263,25 @@ test_string_append_printf(void **state)
 }
 
 
+static void
+test_string_append_escaped(void **state)
+{
+    sb_string_t *str = sb_string_new();
+    str = sb_string_append_escaped(str, NULL);
+    assert_non_null(str);
+    assert_string_equal(str->str, "");
+    assert_int_equal(str->len, 0);
+    assert_int_equal(str->allocated_len, SB_STRING_CHUNK_SIZE);
+    str = sb_string_append_escaped(str, "foo \\a bar \\\\ lol");
+    assert_non_null(str);
+    assert_string_equal(str->str, "foo a bar \\ lol");
+    assert_int_equal(str->len, 15);
+    assert_int_equal(str->allocated_len, SB_STRING_CHUNK_SIZE);
+    assert_null(sb_string_free(str, true));
+    assert_null(sb_string_append_escaped(NULL, "asd"));
+}
+
+
 int
 main(void)
 {
@@ -274,6 +293,7 @@ main(void)
         unit_test(test_string_append),
         unit_test(test_string_append_c),
         unit_test(test_string_append_printf),
+        unit_test(test_string_append_escaped),
     };
     return run_tests(tests);
 }
