@@ -25,7 +25,7 @@ test_config_empty(void **state)
 {
     const char *a = "";
     sb_error_t *err = NULL;
-    sb_config_t *c = sb_config_parse(a, strlen(a), &err);
+    sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_null(err);
     assert_non_null(c);
     assert_non_null(c->root);
@@ -40,7 +40,7 @@ test_config_section_empty(void **state)
 {
     const char *a = "[foo]";
     sb_error_t *err = NULL;
-    sb_config_t *c = sb_config_parse(a, strlen(a), &err);
+    sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_null(err);
     assert_non_null(c);
     assert_non_null(c->root);
@@ -67,7 +67,7 @@ test_config_section(void **state)
         "[foo]\n"
         "asd = zxc";
     sb_error_t *err = NULL;
-    sb_config_t *c = sb_config_parse(a, strlen(a), &err);
+    sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_null(err);
     assert_non_null(c);
     assert_non_null(c->root);
@@ -91,7 +91,7 @@ test_config_section(void **state)
         "[foo]\n"
         "asd = zxc\n";
     err = NULL;
-    c = sb_config_parse(a, strlen(a), &err);
+    c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_null(err);
     assert_non_null(c);
     assert_non_null(c->root);
@@ -115,7 +115,7 @@ test_config_section(void **state)
         "[foo]\r\n"
         "asd = zxc\r\n";
     err = NULL;
-    c = sb_config_parse(a, strlen(a), &err);
+    c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_null(err);
     assert_non_null(c);
     assert_non_null(c->root);
@@ -146,7 +146,7 @@ test_config_section_multiple_keys(void **state)
         "qwe = rty\n"
         "zxc = vbn";
     sb_error_t *err = NULL;
-    sb_config_t *c = sb_config_parse(a, strlen(a), &err);
+    sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_null(err);
     assert_non_null(c);
     assert_non_null(c->root);
@@ -176,7 +176,7 @@ test_config_section_multiple_keys(void **state)
         "qwe = rty\n"
         "zxc = vbn\n";
     err = NULL;
-    c = sb_config_parse(a, strlen(a), &err);
+    c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_null(err);
     assert_non_null(c);
     assert_non_null(c->root);
@@ -206,7 +206,7 @@ test_config_section_multiple_keys(void **state)
         "qwe = rty\r\n"
         "zxc = vbn\r\n";
     err = NULL;
-    c = sb_config_parse(a, strlen(a), &err);
+    c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_null(err);
     assert_non_null(c);
     assert_non_null(c->root);
@@ -244,7 +244,7 @@ test_config_section_multiple_sections(void **state)
         "[bar]\n"
         "lol = hehe";
     sb_error_t *err = NULL;
-    sb_config_t *c = sb_config_parse(a, strlen(a), &err);
+    sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_null(err);
     assert_non_null(c);
     assert_non_null(c->root);
@@ -285,7 +285,7 @@ test_config_section_multiple_sections(void **state)
         "[bar]\n"
         "lol = hehe\n";
     err = NULL;
-    c = sb_config_parse(a, strlen(a), &err);
+    c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_null(err);
     assert_non_null(c);
     assert_non_null(c->root);
@@ -326,7 +326,7 @@ test_config_section_multiple_sections(void **state)
         "[bar]\r\n"
         "lol = hehe\r\n";
     err = NULL;
-    c = sb_config_parse(a, strlen(a), &err);
+    c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_null(err);
     assert_non_null(c);
     assert_non_null(c->root);
@@ -361,13 +361,148 @@ test_config_section_multiple_sections(void **state)
 
 
 static void
+test_config_section_list(void **state)
+{
+    const char *a =
+        "[foo]\n"
+        "asd = zxc\n"
+        "qwe = rty\n"
+        "zxc = vbn\n"
+        "\n"
+        "[bar]\n"
+        "lol = hehe\n"
+        "asdasdadssad";
+    sb_error_t *err = NULL;
+    const char *sections[] = {"bar", NULL};
+    sb_config_t *c = sb_config_parse(a, strlen(a), sections, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 2);
+    char **s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 2);
+    assert_string_equal(s[0], "foo");
+    assert_string_equal(s[1], "bar");
+    assert_null(s[2]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "zxc");
+    assert_string_equal(sb_config_get(c, "foo", "qwe"), "rty");
+    assert_string_equal(sb_config_get(c, "foo", "zxc"), "vbn");
+    char **bar = sb_config_get_list(c, "bar");
+    assert_non_null(bar);
+    assert_string_equal(bar[0], "lol = hehe");
+    assert_string_equal(bar[1], "asdasdadssad");
+    assert_null(bar[2]);
+    sb_strv_free(bar);
+    char **k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 3);
+    assert_string_equal(k[0], "asd");
+    assert_string_equal(k[1], "qwe");
+    assert_string_equal(k[2], "zxc");
+    assert_null(k[3]);
+    sb_strv_free(k);
+    k = sb_config_list_keys(c, "bar");
+    assert_null(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\n"
+        "asd = zxc\n"
+        "qwe = rty\n"
+        "zxc = vbn\n"
+        "\n"
+        "[bar]\n"
+        "lol = hehe\n"
+        "asdasdadssad\n";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), sections, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 2);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 2);
+    assert_string_equal(s[0], "foo");
+    assert_string_equal(s[1], "bar");
+    assert_null(s[2]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "zxc");
+    assert_string_equal(sb_config_get(c, "foo", "qwe"), "rty");
+    assert_string_equal(sb_config_get(c, "foo", "zxc"), "vbn");
+    bar = sb_config_get_list(c, "bar");
+    assert_non_null(bar);
+    assert_string_equal(bar[0], "lol = hehe");
+    assert_string_equal(bar[1], "asdasdadssad");
+    assert_null(bar[2]);
+    sb_strv_free(bar);
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 3);
+    assert_string_equal(k[0], "asd");
+    assert_string_equal(k[1], "qwe");
+    assert_string_equal(k[2], "zxc");
+    assert_null(k[3]);
+    sb_strv_free(k);
+    k = sb_config_list_keys(c, "bar");
+    assert_null(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\r\n"
+        "asd = zxc\r\n"
+        "qwe = rty\r\n"
+        "zxc = vbn\r\n"
+        "\r\n"
+        "[bar]\r\n"
+        "lol = hehe\r\n"
+        "asdasdadssad\r\n";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), sections, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 2);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 2);
+    assert_string_equal(s[0], "foo");
+    assert_string_equal(s[1], "bar");
+    assert_null(s[2]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "zxc");
+    assert_string_equal(sb_config_get(c, "foo", "qwe"), "rty");
+    assert_string_equal(sb_config_get(c, "foo", "zxc"), "vbn");
+    bar = sb_config_get_list(c, "bar");
+    assert_non_null(bar);
+    assert_string_equal(bar[0], "lol = hehe");
+    assert_string_equal(bar[1], "asdasdadssad");
+    assert_null(bar[2]);
+    sb_strv_free(bar);
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 3);
+    assert_string_equal(k[0], "asd");
+    assert_string_equal(k[1], "qwe");
+    assert_string_equal(k[2], "zxc");
+    assert_null(k[3]);
+    sb_strv_free(k);
+    k = sb_config_list_keys(c, "bar");
+    assert_null(k);
+    sb_config_free(c);
+}
+
+
+static void
 test_config_error_start(void **state)
 {
     const char *a =
         "asd\n"
         "[foo]";
     sb_error_t *err = NULL;
-    sb_config_t *c = sb_config_parse(a, strlen(a), &err);
+    sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_non_null(err);
     assert_null(c);
     assert_int_equal(err->code, -10);
@@ -384,7 +519,7 @@ test_config_error_section_with_newline(void **state)
     const char *a =
         "[foo\nbar]";
     sb_error_t *err = NULL;
-    sb_config_t *c = sb_config_parse(a, strlen(a), &err);
+    sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_non_null(err);
     assert_null(c);
     assert_int_equal(err->code, -10);
@@ -403,7 +538,7 @@ test_config_error_key_without_value(void **state)
         "asd = 12\n"
         "foo";
     sb_error_t *err = NULL;
-    sb_config_t *c = sb_config_parse(a, strlen(a), &err);
+    sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_non_null(err);
     assert_null(c);
     assert_int_equal(err->code, -10);
@@ -416,7 +551,7 @@ test_config_error_key_without_value(void **state)
         "asd = 12\n"
         "foo\n";
     err = NULL;
-    c = sb_config_parse(a, strlen(a), &err);
+    c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_non_null(err);
     assert_null(c);
     assert_int_equal(err->code, -10);
@@ -436,6 +571,7 @@ main(void)
         unit_test(test_config_section),
         unit_test(test_config_section_multiple_keys),
         unit_test(test_config_section_multiple_sections),
+        unit_test(test_config_section_list),
         unit_test(test_config_error_start),
         unit_test(test_config_error_section_with_newline),
         unit_test(test_config_error_key_without_value),

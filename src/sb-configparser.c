@@ -10,6 +10,9 @@
 #include <config.h>
 #endif /* HAVE_CONFIG_H */
 
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
 #include <squareball/sb-configparser.h>
 #include <squareball/sb-configparser-private.h>
 #include <squareball/sb-error.h>
@@ -24,11 +27,41 @@ typedef enum {
     CONFIG_SECTION_KEY,
     CONFIG_SECTION_VALUE_START,
     CONFIG_SECTION_VALUE,
+    CONFIG_SECTION_LIST,
 } sb_configparser_state_t;
+
+typedef enum {
+    CONFIG_SECTION_TYPE_MAP = 1,
+    CONFIG_SECTION_TYPE_LIST,
+} sb_configparser_section_type_t;
+
+typedef struct {
+    sb_configparser_section_type_t type;
+    void *data;
+} sb_configparser_section_t;
+
+
+static void
+free_section(sb_configparser_section_t *section)
+{
+    if (section == NULL)
+        return;
+
+    switch (section->type) {
+        case CONFIG_SECTION_TYPE_MAP:
+            sb_trie_free(section->data);
+            break;
+        case CONFIG_SECTION_TYPE_LIST:
+            sb_slist_free_full(section->data, free);
+            break;
+    }
+    free(section);
+}
 
 
 sb_config_t*
-sb_config_parse(const char *src, size_t src_len, sb_error_t **err)
+sb_config_parse(const char *src, size_t src_len, const char *list_sections[],
+    sb_error_t **err)
 {
     if (err != NULL && *err != NULL)
         return NULL;
@@ -36,14 +69,14 @@ sb_config_parse(const char *src, size_t src_len, sb_error_t **err)
     size_t current = 0;
     size_t start = 0;
 
-    sb_trie_t *section = NULL;
+    sb_configparser_section_t *section = NULL;
 
     char *section_name = NULL;
     char *key = NULL;
     char *value = NULL;
 
     sb_config_t *rv = sb_malloc(sizeof(sb_config_t));
-    rv->root = sb_trie_new((sb_free_func_t) sb_trie_free);
+    rv->root = sb_trie_new((sb_free_func_t) free_section);
 
     sb_configparser_state_t state = CONFIG_START;
 
@@ -70,7 +103,14 @@ sb_config_parse(const char *src, size_t src_len, sb_error_t **err)
                 }
                 if (section != NULL) {
                     start = current;
-                    state = CONFIG_SECTION_KEY;
+                    switch (section->type) {
+                        case CONFIG_SECTION_TYPE_MAP:
+                            state = CONFIG_SECTION_KEY;
+                            break;
+                        case CONFIG_SECTION_TYPE_LIST:
+                            state = CONFIG_SECTION_LIST;
+                            break;
+                    }
                     continue;
                 }
                 if (err != NULL)
@@ -86,7 +126,24 @@ sb_config_parse(const char *src, size_t src_len, sb_error_t **err)
             case CONFIG_SECTION:
                 if (c == ']') {
                     section_name = sb_strndup(src + start, current - start);
-                    section = sb_trie_new(free);
+                    section = sb_malloc(sizeof(sb_configparser_section_t));
+                    section->type = CONFIG_SECTION_TYPE_MAP;
+                    if (list_sections != NULL) {
+                        for (size_t i = 0; list_sections[i] != NULL; i++) {
+                            if (0 == strcmp(section_name, list_sections[i])) {
+                                section->type = CONFIG_SECTION_TYPE_LIST;
+                                break;
+                            }
+                        }
+                    }
+                    switch (section->type) {
+                        case CONFIG_SECTION_TYPE_MAP:
+                            section->data = sb_trie_new(free);
+                            break;
+                        case CONFIG_SECTION_TYPE_LIST:
+                            section->data = NULL;
+                            break;
+                    }
                     sb_trie_insert(rv->root, section_name, section);
                     free(section_name);
                     section_name = NULL;
@@ -130,7 +187,7 @@ sb_config_parse(const char *src, size_t src_len, sb_error_t **err)
                     size_t end = is_last && c != '\n' && c != '\r' ? src_len :
                         current;
                     value = sb_strndup(src + start, end - start);
-                    sb_trie_insert(section, sb_str_strip(key),
+                    sb_trie_insert(section->data, sb_str_strip(key),
                         sb_strdup(sb_str_strip(value)));
                     free(key);
                     key = NULL;
@@ -138,6 +195,21 @@ sb_config_parse(const char *src, size_t src_len, sb_error_t **err)
                     value = NULL;
                     state = CONFIG_START;
                     break;
+                }
+                break;
+
+            case CONFIG_SECTION_LIST:
+                if (c == '\r' || c == '\n' || is_last) {
+                    size_t end = is_last && c != '\n' && c != '\r' ? src_len :
+                        current;
+                    value = sb_strndup(src + start, end - start);
+                    section->data = sb_slist_append(section->data,
+                        sb_strdup(sb_str_strip(value)));
+                    free(value);
+                    value = NULL;
+                    state = CONFIG_START;
+                    break;
+
                 }
                 break;
 
@@ -195,12 +267,15 @@ sb_config_list_keys(sb_config_t *config, const char *section)
     if (config == NULL)
         return NULL;
 
-    sb_trie_t *s = sb_trie_lookup(config->root, section);
+    sb_configparser_section_t *s = sb_trie_lookup(config->root, section);
     if (s == NULL)
         return NULL;
 
+    if (s->type != CONFIG_SECTION_TYPE_MAP)
+        return NULL;
+
     sb_slist_t *l = NULL;
-    sb_trie_foreach(s, (sb_trie_foreach_func_t) list_keys, &l);
+    sb_trie_foreach(s->data, (sb_trie_foreach_func_t) list_keys, &l);
 
     char **rv = sb_malloc(sizeof(char*) * (sb_slist_length(l) + 1));
 
@@ -221,11 +296,14 @@ sb_config_get(sb_config_t *config, const char *section, const char *key)
     if (config == NULL)
         return NULL;
 
-    sb_trie_t *s = sb_trie_lookup(config->root, section);
+    sb_configparser_section_t *s = sb_trie_lookup(config->root, section);
     if (s == NULL)
         return NULL;
 
-    return sb_trie_lookup(s, key);
+    if (s->type != CONFIG_SECTION_TYPE_MAP)
+        return NULL;
+
+    return sb_trie_lookup(s->data, key);
 }
 
 
@@ -236,6 +314,30 @@ sb_config_get_with_default(sb_config_t *config, const char *section,
     const char *rv = sb_config_get(config, section, key);
     if (rv == NULL)
         return default_;
+    return rv;
+}
+
+
+char**
+sb_config_get_list(sb_config_t *config, const char *section)
+{
+    if (config == NULL)
+        return NULL;
+
+    sb_configparser_section_t *s = sb_trie_lookup(config->root, section);
+    if (s == NULL)
+        return NULL;
+
+    if (s->type != CONFIG_SECTION_TYPE_LIST)
+        return NULL;
+
+    char **rv = sb_malloc(sizeof(char*) * (sb_slist_length(s->data) + 1));
+
+    size_t i = 0;
+    for (sb_slist_t *tmp = s->data; tmp != NULL; tmp = tmp->next, i++)
+        rv[i] = sb_strdup(tmp->data);
+    rv[i] = NULL;
+
     return rv;
 }
 

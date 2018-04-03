@@ -30,7 +30,7 @@ main(int argc, char **argv)
         return 1;
     }
 
-    sb_config_t *t = sb_config_parse(contents, len, &err);
+    sb_config_t *t = sb_config_parse(contents, len, NULL, &err);
 
     free(contents);
 

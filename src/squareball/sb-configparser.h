@@ -28,12 +28,15 @@ typedef struct _sb_config_t sb_config_t;
 /**
  * Function that parses INI-style configuration from a string.
  *
- * @param src      String with the content to be parsed.
- * @param src_len  String length.
- * @param err      Return location for a \ref sb_error_t, or NULL.
- * @return         An object with the parsed data, or \c NULL.
+ * @param src            String with the content to be parsed.
+ * @param src_len        String length.
+ * @param list_sections  List of strings with sections that should be parsed
+ *                       as lists.
+ * @param err            Return location for a \ref sb_error_t, or NULL.
+ * @return               An object with the parsed data, or \c NULL.
  */
-sb_config_t* sb_config_parse(const char *src, size_t src_len, sb_error_t **err);
+sb_config_t* sb_config_parse(const char *src, size_t src_len,
+    const char *list_sections[], sb_error_t **err);
 
 /**
  * Function that returns an array with configuration sections.
@@ -81,6 +84,19 @@ const char* sb_config_get(sb_config_t *config, const char *section,
  */
 const char* sb_config_get_with_default(sb_config_t *config, const char *section,
     const char *key, const char *default_);
+
+/**
+ * Function that returns a list of values parsed as list from a given section.
+ *
+ * The section must be included in the \c list_sections when calling
+ * \ref sb_config_parse.
+ *
+ * @param config   A \ref sb_config_t object.
+ * @param section  A configuration section.
+ * @return         An NULL-terminated array of strings, that should be free'd
+ *                 with \ref sb_strv_free.
+ */
+char** sb_config_get_list(sb_config_t *config, const char *section);
 
 /**
  * Function that frees the memory allocated for a configuration object.
