@@ -41,6 +41,71 @@ sb_error_new_printf(int code, const char *format, ...)
 }
 
 
+sb_error_t*
+sb_error_new_printf_parser(int code, const char *src, size_t src_len, size_t current,
+    const char *format, ...)
+{
+    va_list ap;
+    va_start(ap, format);
+    char *msg = sb_strdup_vprintf(format, ap);
+    va_end(ap);
+
+    size_t lineno = 1;
+    size_t linestart = 0;
+    size_t lineend = 0;
+    size_t pos = 1;
+
+    for (size_t i = 0; i < src_len; i++) {
+        char c = src[i];
+        if (i < current) {
+            if ((i + 1) < src_len) {
+                if ((c == '\n' && src[i + 1] == '\r') ||
+                    (c == '\r' && src[i + 1] == '\n'))
+                {
+                    lineno++;
+                    i++;
+                    pos = 1;
+                    if ((i + 1) < src_len)
+                        linestart = i + 1;
+                    continue;
+                }
+            }
+            if (c == '\n' || c == '\r') {
+                lineno++;
+                pos = 1;
+                if ((i + 1) < src_len)
+                    linestart = i + 1;
+                continue;
+            }
+            pos++;
+        }
+        else if (c == '\n' || c == '\r') {
+            lineend = i;
+            break;
+        }
+    }
+
+    if (lineend <= linestart && src_len >= linestart)
+        lineend = src_len;
+
+    char *line = sb_strndup(src + linestart, lineend - linestart);
+
+    sb_error_t *rv = NULL;
+
+    if (line[0] == '\0')  // "near" message isn't useful if line is empty
+        rv = sb_error_new(code, msg);
+    else
+        rv = sb_error_new_printf(code,
+            "%s\nError occurred near line %d, position %d: %s", msg, lineno,
+            pos, line);
+
+    free(msg);
+    free(line);
+
+    return rv;
+}
+
+
 void
 sb_error_free(sb_error_t *err)
 {

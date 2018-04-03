@@ -10,6 +10,7 @@
 #define _SQUAREBALL_ERROR_H
 
 #include <stdarg.h>
+#include <stdlib.h>
 
 /**
  * @file squareball/sb-error.h
@@ -79,6 +80,21 @@ sb_error_t* sb_error_new(int code, const char *msg);
  * @return        An error object.
  */
 sb_error_t* sb_error_new_printf(int code, const char *format, ...);
+
+/**
+ * Function that creates a new error object, with printf(3)-like message
+ * formatting and parser current position details.
+ *
+ * @param code     Error code.
+ * @param src      String with source that was being parsed.
+ * @param src_len  Source string size.
+ * @param current  Current parser position, stating from \c 0.
+ * @param format   Format for human-readable error message.
+ * @param ...      One or more printf(3)-like parameters.
+ * @return         An error object.
+ */
+sb_error_t* sb_error_new_printf_parser(int code, const char *src, size_t src_len,
+    size_t current, const char *format, ...);
 
 /**
  * Function that frees memory allocated for an error object.

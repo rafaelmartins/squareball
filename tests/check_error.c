@@ -58,6 +58,66 @@ test_error_new_printf_internal(void **state)
 }
 
 
+static void
+test_error_new_printf_parser(void **state)
+{
+    const char *a = "bola\nguda\nchunda\n";
+    sb_error_t *error = sb_error_new_printf_parser(1, a, strlen(a), 11, "asd %d", 10);
+    assert_non_null(error);
+    assert_int_equal(error->code, 1);
+    assert_string_equal(error->msg,
+        "asd 10\nError occurred near line 3, position 2: chunda");
+    sb_error_free(error);
+    a = "bola\nguda\nchunda";
+    error = sb_error_new_printf_parser(1, a, strlen(a), 11, "asd %d", 10);
+    assert_non_null(error);
+    assert_int_equal(error->code, 1);
+    assert_string_equal(error->msg,
+        "asd 10\nError occurred near line 3, position 2: chunda");
+    sb_error_free(error);
+    a = "bola\nguda\nchunda";
+    error = sb_error_new_printf_parser(1, a, strlen(a), 0, "asd %d", 10);
+    assert_non_null(error);
+    assert_int_equal(error->code, 1);
+    assert_string_equal(error->msg,
+        "asd 10\nError occurred near line 1, position 1: bola");
+    sb_error_free(error);
+    a = "";
+    error = sb_error_new_printf_parser(1, a, strlen(a), 0, "asd %d", 10);
+    assert_non_null(error);
+    assert_int_equal(error->code, 1);
+    assert_string_equal(error->msg, "asd 10");
+    sb_error_free(error);
+}
+
+
+static void
+test_error_new_printf_parser_crlf(void **state)
+{
+    const char *a = "bola\r\nguda\r\nchunda\r\n";
+    sb_error_t *error = sb_error_new_printf_parser(1, a, strlen(a), 13, "asd %d", 10);
+    assert_non_null(error);
+    assert_int_equal(error->code, 1);
+    assert_string_equal(error->msg,
+        "asd 10\nError occurred near line 3, position 2: chunda");
+    sb_error_free(error);
+    a = "bola\r\nguda\r\nchunda";
+    error = sb_error_new_printf_parser(1, a, strlen(a), 13, "asd %d", 10);
+    assert_non_null(error);
+    assert_int_equal(error->code, 1);
+    assert_string_equal(error->msg,
+        "asd 10\nError occurred near line 3, position 2: chunda");
+    sb_error_free(error);
+    a = "bola\r\nguda\r\nchunda";
+    error = sb_error_new_printf_parser(1, a, strlen(a), 0, "asd %d", 10);
+    assert_non_null(error);
+    assert_int_equal(error->code, 1);
+    assert_string_equal(error->msg,
+        "asd 10\nError occurred near line 1, position 1: bola");
+    sb_error_free(error);
+}
+
+
 int
 main(void)
 {
@@ -66,6 +126,8 @@ main(void)
         unit_test(test_error_new_internal),
         unit_test(test_error_new_printf),
         unit_test(test_error_new_printf_internal),
+        unit_test(test_error_new_printf_parser),
+        unit_test(test_error_new_printf_parser_crlf),
     };
     return run_tests(tests);
 }
