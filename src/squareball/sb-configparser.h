@@ -9,6 +9,7 @@
 #ifndef _SQUAREBALL_CONFIGPARSER_H
 #define _SQUAREBALL_CONFIGPARSER_H
 
+#include <stdlib.h>
 #include "sb-error.h"
 #include "sb-slist.h"
 #include "sb-trie.h"
@@ -65,6 +66,21 @@ char** sb_config_list_keys(sb_config_t *config, const char *section);
  */
 const char* sb_config_get(sb_config_t *config, const char *section,
     const char *key);
+
+/**
+ * Function that returns the value of a given configuration key, for a given
+ * configuration section, or returns a default value if the key and/or section
+ * does not exists.
+ *
+ * @param config    A \ref sb_config_t object.
+ * @param section   A configuration section.
+ * @param key       A configuration key.
+ * @param default_  A default value to be returned, if the ken and/or section
+ *                  does not exists.
+ * @return          The value of the given configuration key, or \c default_.
+ */
+const char* sb_config_get_with_default(sb_config_t *config, const char *section,
+    const char *key, const char *default_);
 
 /**
  * Function that frees the memory allocated for a configuration object.

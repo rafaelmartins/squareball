@@ -74,8 +74,8 @@ sb_config_parse(const char *src, size_t src_len, sb_error_t **err)
                     continue;
                 }
                 if (err != NULL)
-                    *err = sb_error_new_printf(SB_ERROR_CONFIGPARSER,
-                        "File must start with section");
+                    *err = sb_error_new_printf_parser(SB_ERROR_CONFIGPARSER,
+                        src, src_len, current, "File must start with section.");
                 break;
 
             case CONFIG_SECTION_START:
@@ -96,8 +96,8 @@ sb_config_parse(const char *src, size_t src_len, sb_error_t **err)
                 if (c != '\r' && c != '\n')
                     break;
                 if (err != NULL)
-                    *err = sb_error_new_printf(SB_ERROR_CONFIGPARSER,
-                        "Section names can't have new lines");
+                    *err = sb_error_new_printf_parser(SB_ERROR_CONFIGPARSER,
+                        src, src_len, current, "Section names can't have new lines.");
                 break;
 
             case CONFIG_SECTION_KEY:
@@ -113,8 +113,8 @@ sb_config_parse(const char *src, size_t src_len, sb_error_t **err)
                     size_t end = is_last && c != '\n' && c != '\r' ? src_len :
                         current;
                     key = sb_strndup(src + start, end - start);
-                    *err = sb_error_new_printf(SB_ERROR_CONFIGPARSER,
-                        "Key without value: %s", key);
+                    *err = sb_error_new_printf_parser(SB_ERROR_CONFIGPARSER,
+                        src, src_len, current, "Key without value: %s.", key);
                     free(key);
                     key = NULL;
                 }
@@ -161,7 +161,7 @@ sb_config_parse(const char *src, size_t src_len, sb_error_t **err)
 
 
 static void
-list_keys(const char *key, const char value, sb_slist_t **l)
+list_keys(const char *key, const char *value, sb_slist_t **l)
 {
     *l = sb_slist_append(*l, sb_strdup(key));
 }
@@ -226,6 +226,17 @@ sb_config_get(sb_config_t *config, const char *section, const char *key)
         return NULL;
 
     return sb_trie_lookup(s, key);
+}
+
+
+const char*
+sb_config_get_with_default(sb_config_t *config, const char *section,
+    const char *key, const char *default_)
+{
+    const char *rv = sb_config_get(config, section, key);
+    if (rv == NULL)
+        return default_;
+    return rv;
 }
 
 
