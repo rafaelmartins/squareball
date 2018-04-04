@@ -38,6 +38,7 @@ noinst_HEADERS = \
 	src/squareball/sb-mem.h \
 	src/squareball/sb-shell.h \
 	src/squareball/sb-slist.h \
+	src/squareball/sb-stdin.h \
 	src/squareball/sb-strfuncs.h \
 	src/squareball/sb-string.h \
 	src/squareball/sb-trie.h \
@@ -62,6 +63,7 @@ pkginclude_HEADERS = \
 	src/squareball/sb-mem.h \
 	src/squareball/sb-shell.h \
 	src/squareball/sb-slist.h \
+	src/squareball/sb-stdin.h \
 	src/squareball/sb-strfuncs.h \
 	src/squareball/sb-string.h \
 	src/squareball/sb-trie.h \
@@ -96,6 +98,7 @@ libsquareball_la_SOURCES = \
 	src/sb-mem.c \
 	src/sb-shell.c \
 	src/sb-slist.c \
+	src/sb-stdin.c \
 	src/sb-strfuncs.c \
 	src/sb-string.c \
 	src/sb-trie.c \
@@ -421,6 +424,32 @@ tests_check_utf8_LDADD = \
 	$(CMOCKA_LIBS) \
 	libsquareball.la \
 	$(NULL)
+
+if USE_LD_WRAP
+check_PROGRAMS += \
+	tests/check_stdin \
+	$(NULL)
+
+tests_check_stdin_SOURCES = \
+	tests/check_stdin.c \
+	$(NULL)
+
+tests_check_stdin_CFLAGS = \
+	$(CMOCKA_CFLAGS) \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+tests_check_stdin_LDFLAGS = \
+	-static \
+	-no-install \
+	-Wl,--wrap=fgetc \
+	$(NULL)
+
+tests_check_stdin_LDADD = \
+	$(CMOCKA_LIBS) \
+	libsquareball.la \
+	$(NULL)
+endif
 
 endif
 

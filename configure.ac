@@ -109,6 +109,38 @@ AS_IF([test "x$enable_tests" != "xno"], [
   PKG_CHECK_MODULES([CMOCKA], [cmocka], [
     TESTS="enabled"
     have_cmocka=yes
+    AC_MSG_CHECKING([whether the linker supports -wrap])
+    save_LDFLAGS="$LDFLAGS"
+    LDFLAGS="$LDFLAGS -Wl,-wrap,exit"
+    AC_RUN_IFELSE([
+      AC_LANG_PROGRAM([
+        [void __wrap_exit(int s){__real_exit(0);}]
+      ], [
+        [exit(1);]
+      ])
+    ], [
+      have_ld_wrap=yes
+      AS_IF([test "x$enable_static" != "xno"], [
+        have_static=yes
+      ], [
+        have_static=no
+      ])
+      have_ld_wrap=yes
+    ], [
+      have_ld_wrap=no
+    ], [
+      have_ld_wrap=no
+    ])
+    AC_MSG_RESULT([$have_ld_wrap])
+    AS_IF([test "x$have_ld_wrap" = "xyes"], [
+      AS_IF([test "x$have_static" = "xyes"],, [
+        AC_MSG_WARN([linker supports -wrap, but static libs disabled. tests requiring it will be disabled])
+        have_ld_wrap=no
+      ])
+    ], [
+      AC_MSG_WARN([linker does not supports -wrap. tests requiring it will be disabled])
+    ])
+    LDFLAGS="$save_LDFLAGS"
   ], [
     TESTS="disabled"
     have_cmocka=no
@@ -120,6 +152,7 @@ AS_IF([test "x$have_cmocka" = "xyes"], , [
   ])
 ])
 AM_CONDITIONAL([USE_CMOCKA], [test "x$have_cmocka" = "xyes"])
+AM_CONDITIONAL([USE_LD_WRAP], [test "x$have_ld_wrap" = "xyes"])
 
 AC_ARG_ENABLE([examples], AS_HELP_STRING([--enable-examples], [build examples]))
 AS_IF([test "x$enable_examples" = "xyes"], [

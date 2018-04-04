@@ -56,6 +56,7 @@ Makefile.in
 /tests/check_error
 /tests/check_shell
 /tests/check_slist
+/tests/check_stdin
 /tests/check_strfuncs
 /tests/check_string
 /tests/check_trie
