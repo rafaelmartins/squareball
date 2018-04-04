@@ -17,6 +17,7 @@
 /**
  * @file squareball/sb-configparser.h
  * @brief Functions to parse INI-style configuration files.
+ * @example hello_configparser.c
  * @{
  */
 
@@ -86,7 +87,7 @@ const char* sb_config_get_with_default(sb_config_t *config, const char *section,
     const char *key, const char *default_);
 
 /**
- * Function that returns a list of values parsed as list from a given section.
+ * Function that returns an array of values parsed as a list from a given section.
  *
  * The section must be included in the \c list_sections when calling
  * \ref sb_config_parse.
