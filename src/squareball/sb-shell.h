@@ -19,8 +19,8 @@
 /**
  * Function that quotes a string to be safely passed to a shell.
  *
- * @param command  The string to be quoted.
- * @return         A newly-allocated string.
+ * @param str  The string to be quoted.
+ * @return     A newly-allocated string.
  */
 char* sb_shell_quote(const char *str);
 
