@@ -26,10 +26,11 @@
 #include <squareball/sb-error.h>
 #include <squareball/sb-strfuncs.h>
 #include <squareball/sb-string.h>
+#include <squareball/sb-utf8.h>
 
 
-char*
-sb_file_get_contents(const char *path, size_t *len, sb_error_t **err)
+static char*
+file_get_contents(const char *path, bool utf8, size_t *len, sb_error_t **err)
 {
     if (path == NULL || len == NULL)
         return NULL;
@@ -52,6 +53,7 @@ sb_file_get_contents(const char *path, size_t *len, sb_error_t **err)
     sb_string_t *str = sb_string_new();
 
     char buffer[1024];
+    char *tmp;
 
     while (!feof(fp) && !ferror(fp)) {
         size_t read_len = fread(buffer, sizeof(char), 1024, fp);
@@ -66,13 +68,41 @@ sb_file_get_contents(const char *path, size_t *len, sb_error_t **err)
             sb_string_free(str, true);
             return NULL;
         }
+        tmp = buffer;
+        if (utf8 && str->len == 0 && read_len > 0) {
+            // skipping BOM before validation, for performance. should be safe
+            size_t skip = sb_utf8_bom_length((uint8_t*) buffer, read_len);
+            read_len -= skip;
+            tmp += skip;
+        }
         *len += read_len;
         sb_string_append_len(str, buffer, read_len);
     }
 
     fclose(fp);
 
+    if (utf8 && !sb_utf8_validate_str(str)) {
+        *err = sb_error_new_printf(SB_ERROR_FILE_READ,
+            "File content is not valid UTF-8: %s", path);
+        sb_string_free(str, true);
+        return NULL;
+    }
+
     return sb_string_free(str, false);
+}
+
+
+char*
+sb_file_get_contents(const char *path, size_t *len, sb_error_t **err)
+{
+    return file_get_contents(path, false, len, err);
+}
+
+
+char*
+sb_file_get_contents_utf8(const char *path, size_t *len, sb_error_t **err)
+{
+    return file_get_contents(path, true, len, err);
 }
 
 

@@ -22,7 +22,7 @@ main(int argc, char **argv)
     size_t len;
     sb_error_t *err = NULL;
 
-    char *contents = sb_file_get_contents(argv[1], &len, &err);
+    char *contents = sb_file_get_contents_utf8(argv[1], &len, &err);
 
     if (err != NULL) {
         fprintf(stderr, "error: %s\n", err->msg);
