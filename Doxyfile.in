@@ -17,8 +17,8 @@ ABBREVIATE_BRIEF       =
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = YES
-STRIP_FROM_PATH        = src
-STRIP_FROM_INC_PATH    = src
+STRIP_FROM_PATH        = @top_srcdir@/src
+STRIP_FROM_INC_PATH    = @top_srcdir@/src
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
 QT_AUTOBRIEF           = NO
@@ -118,7 +118,7 @@ INPUT_FILTER           =
 FILTER_PATTERNS        =
 FILTER_SOURCE_FILES    = NO
 FILTER_SOURCE_PATTERNS =
-USE_MDFILE_AS_MAINPAGE = doc/00_index.md
+USE_MDFILE_AS_MAINPAGE = @top_srcdir@/doc/00_index.md
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
 #---------------------------------------------------------------------------
