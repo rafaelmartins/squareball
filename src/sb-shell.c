@@ -10,6 +10,7 @@
 #include <config.h>
 #endif /* HAVE_CONFIG_H */
 
+#include <stdbool.h>
 #include <string.h>
 #include <squareball/sb-string.h>
 

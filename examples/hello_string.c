@@ -6,6 +6,7 @@
  * See the file LICENSE.
  */
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <squareball.h>

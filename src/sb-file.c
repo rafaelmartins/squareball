@@ -19,7 +19,9 @@
 #endif /* HAVE_SYS_TYPES_H */
 
 #include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <squareball/sb-error.h>
 #include <squareball/sb-strfuncs.h>
