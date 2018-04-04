@@ -76,14 +76,15 @@ file_get_contents(const char *path, bool utf8, size_t *len, sb_error_t **err)
             tmp += skip;
         }
         *len += read_len;
-        sb_string_append_len(str, buffer, read_len);
+        sb_string_append_len(str, tmp, read_len);
     }
 
     fclose(fp);
 
     if (utf8 && !sb_utf8_validate_str(str)) {
-        *err = sb_error_new_printf(SB_ERROR_FILE_READ,
-            "File content is not valid UTF-8: %s", path);
+        if (err != NULL)
+            *err = sb_error_new_printf(SB_ERROR_FILE_READ,
+                "File content is not valid UTF-8: %s", path);
         sb_string_free(str, true);
         return NULL;
     }
