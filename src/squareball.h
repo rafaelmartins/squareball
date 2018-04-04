@@ -27,6 +27,7 @@
 #include <squareball/sb-strfuncs.h>
 #include <squareball/sb-string.h>
 #include <squareball/sb-trie.h>
+#include <squareball/sb-utf8.h>
 
 /** @} */
 

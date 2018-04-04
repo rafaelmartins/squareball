@@ -42,6 +42,7 @@ noinst_HEADERS = \
 	src/squareball/sb-string.h \
 	src/squareball/sb-trie.h \
 	src/squareball/sb-trie-private.h \
+	src/squareball/sb-utf8.h \
 	$(NULL)
 
 noinst_LTLIBRARIES = \
@@ -64,6 +65,7 @@ pkginclude_HEADERS = \
 	src/squareball/sb-strfuncs.h \
 	src/squareball/sb-string.h \
 	src/squareball/sb-trie.h \
+	src/squareball/sb-utf8.h \
 	$(NULL)
 
 noinst_HEADERS = \
@@ -97,6 +99,7 @@ libsquareball_la_SOURCES = \
 	src/sb-strfuncs.c \
 	src/sb-string.c \
 	src/sb-trie.c \
+	src/sb-utf8.c \
 	$(NULL)
 
 libsquareball_la_CFLAGS = \
@@ -272,6 +275,7 @@ check_PROGRAMS += \
 	tests/check_strfuncs \
 	tests/check_string \
 	tests/check_trie \
+	tests/check_utf8 \
 	$(NULL)
 
 tests_check_configparser_SOURCES = \
@@ -396,6 +400,24 @@ tests_check_trie_LDFLAGS = \
 	$(NULL)
 
 tests_check_trie_LDADD = \
+	$(CMOCKA_LIBS) \
+	libsquareball.la \
+	$(NULL)
+
+tests_check_utf8_SOURCES = \
+	tests/check_utf8.c \
+	$(NULL)
+
+tests_check_utf8_CFLAGS = \
+	$(CMOCKA_CFLAGS) \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+tests_check_utf8_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+tests_check_utf8_LDADD = \
 	$(CMOCKA_LIBS) \
 	libsquareball.la \
 	$(NULL)
