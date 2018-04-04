@@ -51,6 +51,15 @@ matrix:
             - libcmocka-dev
     - compiler: gcc
       env:
+        - TARGET=docs
+      addons:
+        apt:
+          packages:
+            - realpath
+            - libcmocka-dev
+            - doxygen
+    - compiler: gcc
+      env:
         - TARGET=dist-srpm
       addons:
         apt:
