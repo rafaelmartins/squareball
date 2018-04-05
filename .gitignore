@@ -60,6 +60,7 @@ Makefile.in
 /tests/check_strfuncs
 /tests/check_string
 /tests/check_trie
+/tests/check_utf8
 
 # tarballs
 squareball-*.tar.*
