@@ -34,6 +34,15 @@ PKG_PROG_PKG_CONFIG
 
 AC_PROG_SED
 
+AC_ARG_ENABLE([bundleme], AS_HELP_STRING([--enable-bundleme],
+              [do not build shared library and do not install anything]))
+AS_IF([test "x$enable_bundleme" = "xyes"], [
+  enable_static=yes
+  enable_shared=no
+  enable_tests=no
+])
+AM_CONDITIONAL([BUNDLE_ME], [test "x$enable_bundleme" = "xyes"])
+
 RPM_VERSION=`echo ${PACKAGE_VERSION} | ${SED} "s/-/./g"`
 AC_SUBST(RPM_VERSION)
 
@@ -55,14 +64,6 @@ AS_IF([test "x$have_rpmbuild" = "xyes"], , [
 AM_CONDITIONAL([USE_RPMBUILD], [test "x$ac_cv_path_rpmbuild" != "x"])
 RPMBUILD="$ac_cv_path_rpmbuild"
 AC_SUBST(RPMBUILD)
-
-AC_ARG_ENABLE([bundleme], AS_HELP_STRING([--enable-bundleme],
-              [do not build shared library and do not install anything]))
-AS_IF([test "x$enable_bundleme" = "xyes"], [
-  enable_static=yes
-  enable_shared=no
-])
-AM_CONDITIONAL([BUNDLE_ME], [test "x$enable_bundleme" = "xyes"])
 
 AC_ARG_ENABLE([doc], AS_HELP_STRING([--disable-doc],
               [ignore presence of doxygen and disable documentation build]))
