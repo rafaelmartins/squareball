@@ -20,6 +20,7 @@ EXTRA_DIST = \
 	autogen.sh \
 	LICENSE \
 	README.md \
+	squareball.m4 \
 	$(NULL)
 
 BUILT_SOURCES = \
