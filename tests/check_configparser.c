@@ -611,7 +611,7 @@ test_config_error_start(void **state)
     sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_non_null(err);
     assert_null(c);
-    assert_int_equal(err->code, -10);
+    assert_int_equal(err->code, -20);
     assert_string_equal(err->msg,
         "File must start with section.\n"
         "Error occurred near line 1, position 1: asd");
@@ -628,7 +628,7 @@ test_config_error_section_with_newline(void **state)
     sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_non_null(err);
     assert_null(c);
-    assert_int_equal(err->code, -10);
+    assert_int_equal(err->code, -20);
     assert_string_equal(err->msg,
         "Section names can't have new lines.\n"
         "Error occurred near line 1, position 5: [foo");
@@ -647,7 +647,7 @@ test_config_error_key_without_value(void **state)
     sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_non_null(err);
     assert_null(c);
-    assert_int_equal(err->code, -10);
+    assert_int_equal(err->code, -20);
     assert_string_equal(err->msg,
         "Key without value: foo.\n"
         "Error occurred near line 3, position 3: foo");
@@ -660,7 +660,7 @@ test_config_error_key_without_value(void **state)
     c = sb_config_parse(a, strlen(a), NULL, &err);
     assert_non_null(err);
     assert_null(c);
-    assert_int_equal(err->code, -10);
+    assert_int_equal(err->code, -20);
     assert_string_equal(err->msg,
         "Key without value: foo.\n"
         "Error occurred near line 3, position 4: foo");
