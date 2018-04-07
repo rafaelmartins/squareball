@@ -58,7 +58,7 @@ enum {
     SB_ERROR_FILE_WRITE = -3,
     SB_ERROR_DIR_CREATE = -4,
 
-    SB_ERROR_CONFIGPARSER = -10,
+    SB_ERROR_CONFIGPARSER = -20,
 };
 
 /**
