@@ -1,0 +1,24 @@
+default_configure_args:
+  - "CFLAGS=-Wall -g -O0"
+  - --disable-silent-rules
+  - --disable-bundleme
+  - --disable-valgrind
+  - --disable-doc
+  - --enable-tests
+  - --enable-examples
+
+targets:
+  dist-docs:
+    configure_args:
+      - --enable-doc
+    archive_extract_filter: "*.tar.xz"
+  dist-srpm:
+    archive_filter: "*.src.rpm"
+  clang-analyzer:
+    configure_args:
+      - --enable-silent-rules
+    task_script: build-aux/clang-analyzer.sh
+    archive_extract_filter: "*.tar.xz"
+  valgrind:
+    configure_args:
+      - --enable-valgrind

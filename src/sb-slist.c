@@ -19,6 +19,10 @@ sb_slist_t*
 sb_slist_append(sb_slist_t *l, void *data)
 {
     sb_slist_t *node = sb_malloc(sizeof(sb_slist_t));
+
+    // FIXME: remove this line, intentional for temporary testing
+    void *foo = sb_malloc(10);
+
     node->data = data;
     node->next = NULL;
     if (l == NULL) {

@@ -466,8 +466,15 @@ clean-local:
 
 if BUILD_DOCS
 docs: clean-local Doxyfile
-	-mkdir -p $(top_builddir)/doc/build
+	-$(MKDIR_P) $(top_builddir)/doc/build
 	$(DOXYGEN) Doxyfile
+
+dist-docs: docs
+	cp -r $(top_builddir)/doc/build/html $(top_builddir)/docs
+	tar \
+		-cvJf "$(PACKAGE_TARNAME)-docs-$(PACKAGE_VERSION).tar.xz" \
+		-C $(top_builddir) \
+		docs
 endif
 
 
