@@ -11,12 +11,16 @@ targets:
   dist-docs:
     configure_args:
       - --enable-doc
+      - --disable-tests
     archive_extract_filter: "*.tar.xz"
   dist-srpm:
+    configure_args:
+      - --disable-tests
     archive_filter: "*.src.rpm"
   clang-analyzer:
     configure_args:
       - --enable-silent-rules
+      - --disable-tests
     task_script: build-aux/clang-analyzer.sh
     archive_extract_filter: "*.tar.xz"
   valgrind:
