@@ -1,23 +1,23 @@
 sudo: required
 language: c
 
-addons:
-  apt:
-    packages:
-      - doxygen
-      - libcmocka-dev
-      - rpm
-      - valgrind
-
 matrix:
   include:
     - compiler: gcc
       env:
         - TARGET=distcheck
+      addons:
+        apt:
+          packages:
+            - libcmocka-dev
     - compiler: clang
       env:
         - TARGET=distcheck
         - DISABLE_PUBLISHER=1
+      addons:
+        apt:
+          packages:
+            - libcmocka-dev
     - os: osx
       compiler: clang
       env:
@@ -26,18 +26,36 @@ matrix:
     - compiler: gcc
       env:
         - TARGET=valgrind
+      addons:
+        apt:
+          packages:
+            - libcmocka-dev
+            - valgrind
     - compiler: clang
       env:
         - TARGET=valgrind
+      addons:
+        apt:
+          packages:
+            - libcmocka-dev
+            - valgrind
     - compiler: clang
       env:
         - TARGET=clang-analyzer
     - compiler: gcc
       env:
         - TARGET=dist-docs
+      addons:
+        apt:
+          packages:
+            - doxygen
     - compiler: gcc
       env:
         - TARGET=dist-srpm
+      addons:
+        apt:
+          packages:
+            - rpm
 
 install:
   - gem install ronn
