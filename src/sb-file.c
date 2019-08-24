@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <squareball/sb-error.h>
+#include <squareball/sb-strerror.h>
 #include <squareball/sb-strfuncs.h>
 #include <squareball/sb-string.h>
 #include <squareball/sb-utf8.h>
@@ -45,8 +46,9 @@ file_get_contents(const char *path, bool utf8, size_t *len, sb_error_t **err)
 
     if (fp == NULL) {
         if (err != NULL)
-            *err = sb_error_new_printf(SB_ERROR_FILE_OPEN,
-                "Failed to open file (%s): %s", path, strerror(tmp_errno));
+            *err = sb_strerror_new_printf(
+                "filesystem: Failed to open file (%s): %s", path,
+                strerror(tmp_errno));
         return NULL;
     }
 
@@ -60,8 +62,8 @@ file_get_contents(const char *path, bool utf8, size_t *len, sb_error_t **err)
         tmp_errno = errno;
         if (ferror(fp)) {
             if (err != NULL)
-                *err = sb_error_new_printf(SB_ERROR_FILE_READ,
-                    "Failed to read from file (%s): %s", path,
+                *err = sb_strerror_new_printf(
+                    "filesystem: Failed to read file (%s): %s", path,
                     strerror(tmp_errno));
             fclose(fp);
             *len = 0;
@@ -83,8 +85,8 @@ file_get_contents(const char *path, bool utf8, size_t *len, sb_error_t **err)
 
     if (utf8 && !sb_utf8_validate_str(str)) {
         if (err != NULL)
-            *err = sb_error_new_printf(SB_ERROR_FILE_READ,
-                "File content is not valid UTF-8: %s", path);
+            *err = sb_strerror_new_printf(
+                "filesystem: File content is not valid UTF-8: %s", path);
         sb_string_free(str, true);
         return NULL;
     }
@@ -122,8 +124,9 @@ sb_file_put_contents(const char *path, const char* contents, ssize_t len,
 
     if (fp == NULL) {
         if (err != NULL)
-            *err = sb_error_new_printf(SB_ERROR_FILE_OPEN,
-                "Failed to open file (%s): %s", path, strerror(tmp_errno));
+            *err = sb_strerror_new_printf(
+                "filesystem: Failed to open file (%s): %s", path,
+                strerror(tmp_errno));
         return;
     }
 
@@ -135,8 +138,9 @@ sb_file_put_contents(const char *path, const char* contents, ssize_t len,
 
     if (ferror(fp)) {
         if (err != NULL)
-            *err = sb_error_new_printf(SB_ERROR_FILE_WRITE,
-                "Failed to write to file (%s): %s", path, strerror(tmp_errno));
+            *err = sb_strerror_new_printf(
+                "filesystem: Failed to write to file (%s): %s", path,
+                strerror(tmp_errno));
         fclose(fp);
         return;
     }
@@ -144,9 +148,9 @@ sb_file_put_contents(const char *path, const char* contents, ssize_t len,
     fclose(fp);
 
     if (written_len != len && err != NULL)
-        *err = sb_error_new_printf(SB_ERROR_FILE_WRITE,
-            "Failed to write to file (%s): only %zu bytes written, from %zu",
-            written_len, len);
+        *err = sb_strerror_new_printf(
+            "filesystem: Failed to write to file (%s): only %zu bytes written, "
+            "from %zu", written_len, len);
 }
 
 
@@ -181,16 +185,17 @@ sb_mkdir_recursive(const char *path, sb_error_t **err)
             (errno != EEXIST))
         {
             if (err != NULL)
-                *err = sb_error_new_printf(SB_ERROR_DIR_CREATE,
-                    "Failed to create directory (%s): %s", path,
+                *err = sb_strerror_new_printf(
+                    "filesystem: Failed to create directory (%s): %s", path,
                     strerror(errno));
             break;
         }
         *tmp = bkp;
 #else
         if (err != NULL)
-            *err = sb_error_new_printf(SB_ERROR_DIR_CREATE,
-                "Failed to create directory (%s): Unsupported platform", path);
+            *err = sb_strerror_new_printf(
+                "filesystem: Failed to create directory (%s): Unsupported "
+                "platform", path);
         break;
 #endif
 

@@ -13,96 +13,63 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <squareball/sb-error.h>
 #include <squareball/sb-mem.h>
 #include <squareball/sb-strfuncs.h>
 
+struct _sb_error_t {
+    sb_error_type_t *type;
+    void *data;
+    char *msg;
+};
+
 
 sb_error_t*
-sb_error_new(int code, const char *msg)
+sb_error_new_from_type(sb_error_type_t *type, void *data)
 {
     sb_error_t *err = sb_malloc(sizeof(sb_error_t));
-    err->code = code;
-    err->msg = sb_strdup(msg);
+    err->type = type;
+    err->data = data;
+    err->msg = NULL;
     return err;
 }
 
 
-sb_error_t*
-sb_error_new_printf(int code, const char *format, ...)
+const char*
+sb_error_get_type_name(sb_error_t *err)
 {
-    va_list ap;
-    va_start(ap, format);
-    char *tmp = sb_strdup_vprintf(format, ap);
-    va_end(ap);
-    sb_error_t *rv = sb_error_new(code, tmp);
-    free(tmp);
-    return rv;
+    if (err == NULL || err->type == NULL)
+        return NULL;
+
+    return err->type->name;
 }
 
 
-sb_error_t*
-sb_error_new_printf_parser(int code, const char *src, size_t src_len, size_t current,
-    const char *format, ...)
+const void*
+sb_error_get_data(sb_error_t *err)
 {
-    va_list ap;
-    va_start(ap, format);
-    char *msg = sb_strdup_vprintf(format, ap);
-    va_end(ap);
+    if (err == NULL)
+        return NULL;
 
-    size_t lineno = 1;
-    size_t linestart = 0;
-    size_t lineend = 0;
-    size_t pos = 1;
+    return err->data;
+}
 
-    for (size_t i = 0; i < src_len; i++) {
-        char c = src[i];
-        if (i < current) {
-            if ((i + 1) < src_len) {
-                if ((c == '\n' && src[i + 1] == '\r') ||
-                    (c == '\r' && src[i + 1] == '\n'))
-                {
-                    lineno++;
-                    i++;
-                    pos = 1;
-                    if ((i + 1) < src_len)
-                        linestart = i + 1;
-                    continue;
-                }
-            }
-            if (c == '\n' || c == '\r') {
-                lineno++;
-                pos = 1;
-                if ((i + 1) < src_len)
-                    linestart = i + 1;
-                continue;
-            }
-            pos++;
-        }
-        else if (c == '\n' || c == '\r') {
-            lineend = i;
-            break;
-        }
-    }
 
-    if (lineend <= linestart && src_len >= linestart)
-        lineend = src_len;
+const char*
+sb_error_to_string(sb_error_t *err)
+{
+    if (err == NULL)
+        return NULL;
 
-    char *line = sb_strndup(src + linestart, lineend - linestart);
+    if (err->msg != NULL)
+        return err->msg;
 
-    sb_error_t *rv = NULL;
+    if (err->type == NULL || err->type->to_string_func == NULL)
+        return NULL;
 
-    if (line[0] == '\0')  // "near" message isn't useful if line is empty
-        rv = sb_error_new(code, msg);
-    else
-        rv = sb_error_new_printf(code,
-            "%s\nError occurred near line %d, position %d: %s", msg, lineno,
-            pos, line);
-
-    free(msg);
-    free(line);
-
-    return rv;
+    err->msg = err->type->to_string_func(err->data);
+    return err->msg;
 }
 
 
@@ -111,6 +78,10 @@ sb_error_free(sb_error_t *err)
 {
     if (err == NULL)
         return;
+
+    if (err->type != NULL && err->type->free_func != NULL)
+        err->type->free_func(err->data);
+
     free(err->msg);
     free(err);
 }

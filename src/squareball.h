@@ -22,9 +22,11 @@
 #include <squareball/sb-error.h>
 #include <squareball/sb-file.h>
 #include <squareball/sb-mem.h>
+#include <squareball/sb-parsererror.h>
 #include <squareball/sb-shell.h>
 #include <squareball/sb-slist.h>
 #include <squareball/sb-stdin.h>
+#include <squareball/sb-strerror.h>
 #include <squareball/sb-strfuncs.h>
 #include <squareball/sb-string.h>
 #include <squareball/sb-trie.h>

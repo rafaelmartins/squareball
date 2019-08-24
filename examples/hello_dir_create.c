@@ -24,7 +24,7 @@ main(int argc, char **argv)
     sb_mkdir_recursive(argv[1], &err);
 
     if (err != NULL) {
-        fprintf(stderr, "error: %s\n", err->msg);
+        fprintf(stderr, "error: %s\n", sb_error_to_string(err));
         sb_error_free(err);
         return 1;
     }

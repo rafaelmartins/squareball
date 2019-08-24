@@ -37,9 +37,11 @@ noinst_HEADERS = \
 	src/squareball/sb-error.h \
 	src/squareball/sb-file.h \
 	src/squareball/sb-mem.h \
+	src/squareball/sb-parsererror.h \
 	src/squareball/sb-shell.h \
 	src/squareball/sb-slist.h \
 	src/squareball/sb-stdin.h \
+	src/squareball/sb-strerror.h \
 	src/squareball/sb-strfuncs.h \
 	src/squareball/sb-string.h \
 	src/squareball/sb-trie.h \
@@ -62,9 +64,11 @@ pkginclude_HEADERS = \
 	src/squareball/sb-error.h \
 	src/squareball/sb-file.h \
 	src/squareball/sb-mem.h \
+	src/squareball/sb-parsererror.h \
 	src/squareball/sb-shell.h \
 	src/squareball/sb-slist.h \
 	src/squareball/sb-stdin.h \
+	src/squareball/sb-strerror.h \
 	src/squareball/sb-strfuncs.h \
 	src/squareball/sb-string.h \
 	src/squareball/sb-trie.h \
@@ -97,9 +101,11 @@ libsquareball_la_SOURCES = \
 	src/sb-error.c \
 	src/sb-file.c \
 	src/sb-mem.c \
+	src/sb-parsererror.c \
 	src/sb-shell.c \
 	src/sb-slist.c \
 	src/sb-stdin.c \
+	src/sb-strerror.c \
 	src/sb-strfuncs.c \
 	src/sb-string.c \
 	src/sb-trie.c \
@@ -127,6 +133,7 @@ if BUILD_EXAMPLES
 
 noinst_PROGRAMS += \
 	examples/hello_configparser \
+	examples/hello_custom_error_type \
 	examples/hello_dir_create \
 	examples/hello_file_read \
 	examples/hello_file_write \
@@ -149,6 +156,22 @@ examples_hello_configparser_LDFLAGS = \
 	$(NULL)
 
 examples_hello_configparser_LDADD= \
+	libsquareball.la \
+	$(NULL)
+
+examples_hello_custom_error_type_SOURCES = \
+	examples/hello_custom_error_type.c \
+	$(NULL)
+
+examples_hello_custom_error_type_CFLAGS = \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+examples_hello_custom_error_type_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+examples_hello_custom_error_type_LDADD= \
 	libsquareball.la \
 	$(NULL)
 
@@ -274,8 +297,10 @@ if USE_CMOCKA
 check_PROGRAMS += \
 	tests/check_configparser \
 	tests/check_error \
+	tests/check_parsererror \
 	tests/check_shell \
 	tests/check_slist \
+	tests/check_strerror \
 	tests/check_strfuncs \
 	tests/check_string \
 	tests/check_trie \
@@ -318,6 +343,24 @@ tests_check_error_LDADD = \
 	libsquareball.la \
 	$(NULL)
 
+tests_check_parsererror_SOURCES = \
+	tests/check_parsererror.c \
+	$(NULL)
+
+tests_check_parsererror_CFLAGS = \
+	$(CMOCKA_CFLAGS) \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+tests_check_parsererror_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+tests_check_parsererror_LDADD = \
+	$(CMOCKA_LIBS) \
+	libsquareball.la \
+	$(NULL)
+
 tests_check_shell_SOURCES = \
 	tests/check_shell.c \
 	$(NULL)
@@ -350,6 +393,24 @@ tests_check_slist_LDFLAGS = \
 	$(NULL)
 
 tests_check_slist_LDADD = \
+	$(CMOCKA_LIBS) \
+	libsquareball.la \
+	$(NULL)
+
+tests_check_strerror_SOURCES = \
+	tests/check_strerror.c \
+	$(NULL)
+
+tests_check_strerror_CFLAGS = \
+	$(CMOCKA_CFLAGS) \
+	-I$(top_srcdir)/src \
+	$(NULL)
+
+tests_check_strerror_LDFLAGS = \
+	-no-install \
+	$(NULL)
+
+tests_check_strerror_LDADD = \
 	$(CMOCKA_LIBS) \
 	libsquareball.la \
 	$(NULL)

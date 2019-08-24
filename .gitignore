@@ -36,12 +36,16 @@ Makefile.in
 !/build-aux/clang-analyzer.sh
 /squareball.pc
 
+# gdb
+.gdb_history
+
 # installed .m4 files
 /m4/*.m4
 !/m4/pkg.m4
 
 # examples
 /examples/hello_configparser
+/examples/hello_custom_error_type
 /examples/hello_dir_create
 /examples/hello_file_read
 /examples/hello_file_write
@@ -53,9 +57,11 @@ Makefile.in
 # tests
 /tests/check_configparser
 /tests/check_error
+/tests/check_parsererror
 /tests/check_shell
 /tests/check_slist
 /tests/check_stdin
+/tests/check_strerror
 /tests/check_strfuncs
 /tests/check_string
 /tests/check_trie

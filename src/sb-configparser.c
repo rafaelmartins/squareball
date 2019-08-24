@@ -16,6 +16,7 @@
 #include <squareball/sb-configparser.h>
 #include <squareball/sb-configparser-private.h>
 #include <squareball/sb-error.h>
+#include <squareball/sb-parsererror.h>
 #include <squareball/sb-strfuncs.h>
 #include <squareball/sb-string.h>
 #include <squareball/sb-trie.h>
@@ -136,8 +137,8 @@ sb_config_parse(const char *src, size_t src_len, const char *list_sections[],
                     continue;
                 }
                 if (err != NULL)
-                    *err = sb_error_new_printf_parser(SB_ERROR_CONFIGPARSER,
-                        src, src_len, current, "File must start with section.");
+                    *err = sb_parser_error_new(src, src_len, current,
+                        "configparser: File must start with section.");
                 break;
 
             case CONFIG_SECTION_START:
@@ -175,8 +176,8 @@ sb_config_parse(const char *src, size_t src_len, const char *list_sections[],
                 if (c != '\r' && c != '\n')
                     break;
                 if (err != NULL)
-                    *err = sb_error_new_printf_parser(SB_ERROR_CONFIGPARSER,
-                        src, src_len, current, "Section names can't have new lines.");
+                    *err = sb_parser_error_new(src, src_len, current,
+                        "configparser: Section names can't have new lines.");
                 break;
 
             case CONFIG_SECTION_KEY:
@@ -194,8 +195,8 @@ sb_config_parse(const char *src, size_t src_len, const char *list_sections[],
                     size_t end = is_last && c != '\n' && c != '\r' ? src_len :
                         current;
                     key = sb_strndup(src + start, end - start);
-                    *err = sb_error_new_printf_parser(SB_ERROR_CONFIGPARSER,
-                        src, src_len, current, "Key without value: %s.", key);
+                    *err = sb_parser_error_new_printf(src, src_len, current,
+                        "configparser: Key without value: %s.", key);
                     free(key);
                     key = NULL;
                 }
@@ -232,9 +233,8 @@ sb_config_parse(const char *src, size_t src_len, const char *list_sections[],
                     state = CONFIG_START;
                     break;
                 }
-                *err = sb_error_new_printf_parser(SB_ERROR_CONFIGPARSER, src,
-                    src_len, current,
-                    "Invalid value for key, should not have anything "
+                *err = sb_parser_error_new(src, src_len, current,
+                    "configparser: Invalid value for key, should not have anything "
                     "after quotes.");
                 break;
 
@@ -284,9 +284,8 @@ sb_config_parse(const char *src, size_t src_len, const char *list_sections[],
                     state = CONFIG_START;
                     break;
                 }
-                *err = sb_error_new_printf_parser(SB_ERROR_CONFIGPARSER, src,
-                    src_len, current,
-                    "Invalid value for list item, should not have "
+                *err = sb_parser_error_new(src, src_len, current,
+                    "configparser: Invalid value for list item, should not have "
                     "anything after quotes.");
                 break;
 

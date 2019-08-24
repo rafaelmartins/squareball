@@ -609,11 +609,10 @@ test_config_error_start(void **state)
         "[foo]";
     sb_error_t *err = NULL;
     sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
-    assert_non_null(err);
     assert_null(c);
-    assert_int_equal(err->code, -20);
-    assert_string_equal(err->msg,
-        "File must start with section.\n"
+    assert_non_null(err);
+    assert_string_equal(sb_error_to_string(err),
+        "configparser: File must start with section.\n"
         "Error occurred near line 1, position 1: asd");
     sb_error_free(err);
 }
@@ -626,11 +625,10 @@ test_config_error_section_with_newline(void **state)
         "[foo\nbar]";
     sb_error_t *err = NULL;
     sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
-    assert_non_null(err);
     assert_null(c);
-    assert_int_equal(err->code, -20);
-    assert_string_equal(err->msg,
-        "Section names can't have new lines.\n"
+    assert_non_null(err);
+    assert_string_equal(sb_error_to_string(err),
+        "configparser: Section names can't have new lines.\n"
         "Error occurred near line 1, position 5: [foo");
     sb_error_free(err);
 }
@@ -645,11 +643,10 @@ test_config_error_key_without_value(void **state)
         "foo";
     sb_error_t *err = NULL;
     sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
-    assert_non_null(err);
     assert_null(c);
-    assert_int_equal(err->code, -20);
-    assert_string_equal(err->msg,
-        "Key without value: foo.\n"
+    assert_non_null(err);
+    assert_string_equal(sb_error_to_string(err),
+        "configparser: Key without value: foo.\n"
         "Error occurred near line 3, position 3: foo");
     sb_error_free(err);
     a =
@@ -658,11 +655,10 @@ test_config_error_key_without_value(void **state)
         "foo\n";
     err = NULL;
     c = sb_config_parse(a, strlen(a), NULL, &err);
-    assert_non_null(err);
     assert_null(c);
-    assert_int_equal(err->code, -20);
-    assert_string_equal(err->msg,
-        "Key without value: foo.\n"
+    assert_non_null(err);
+    assert_string_equal(sb_error_to_string(err),
+        "configparser: Key without value: foo.\n"
         "Error occurred near line 3, position 4: foo");
     sb_error_free(err);
 }

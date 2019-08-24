@@ -25,7 +25,7 @@ main(int argc, char **argv)
     char *contents = sb_file_get_contents_utf8(argv[1], &len, &err);
 
     if (err != NULL) {
-        fprintf(stderr, "error: %s\n", err->msg);
+        fprintf(stderr, "error: %s\n", sb_error_to_string(err));
         sb_error_free(err);
         return 1;
     }
@@ -35,7 +35,7 @@ main(int argc, char **argv)
     free(contents);
 
     if (err != NULL) {
-        fprintf(stderr, "error: %s\n", err->msg);
+        fprintf(stderr, "error: %s\n", sb_error_to_string(err));
         sb_error_free(err);
         return 1;
     }

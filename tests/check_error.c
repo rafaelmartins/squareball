@@ -12,109 +12,104 @@
 #include <cmocka.h>
 
 #include <string.h>
+#include <squareball/sb-mem.h>
+#include <squareball/sb-strfuncs.h>
 #include <squareball/sb-error.h>
+
+typedef struct {
+    int a;
+    char *b;
+} my_error_data_t;
+
+
+static char*
+my_error_to_string(void *data)
+{
+    if (data == NULL)
+        return sb_strdup("");
+
+    my_error_data_t *d = data;
+    return sb_strdup_printf("my error: %s (%d)", d->b == NULL ? "NULL" : d->b,
+        d->a);
+}
+
+
+static void
+my_error_free(void *data)
+{
+    if (data == NULL)
+        return;
+
+    my_error_data_t *d = data;
+    free(d->b);
+    free(d);
+}
+
+
+static sb_error_type_t my_error = {
+    .name = "my_error",
+    .to_string_func = my_error_to_string,
+    .free_func = my_error_free,
+};
+
+
+static sb_error_t*
+my_error_new(int a, const char *b)
+{
+    my_error_data_t *d = sb_malloc(sizeof(my_error_data_t));
+    d->a = a;
+    d->b = sb_strdup(b);
+    return sb_error_new_from_type(&my_error, d);
+}
 
 
 static void
 test_error_new(void **state)
 {
-    sb_error_t *error = sb_error_new(1, "bola %s");
+    sb_error_t *error = my_error_new(0, NULL);
     assert_non_null(error);
-    assert_int_equal(error->code, 1);
-    assert_string_equal(error->msg, "bola %s");
+    const my_error_data_t *data = sb_error_get_data(error);
+    assert_non_null(data);
+    assert_int_equal(data->a, 0);
+    assert_null(data->b);
+    assert_string_equal(sb_error_get_type_name(error), "my_error");
+    assert_string_equal(sb_error_to_string(error), "my error: NULL (0)");
+    sb_error_free(error);
+
+    error = my_error_new(2, "asd");
+    assert_non_null(error);
+    data = sb_error_get_data(error);
+    assert_non_null(data);
+    assert_int_equal(data->a, 2);
+    assert_string_equal(data->b, "asd");
+    assert_string_equal(sb_error_get_type_name(error), "my_error");
+    assert_string_equal(sb_error_to_string(error), "my error: asd (2)");
     sb_error_free(error);
 }
 
 
 static void
-test_error_new_internal(void **state)
+test_error_new_null(void **state)
 {
-    sb_error_t *error = sb_error_new(SB_ERROR_FILE_OPEN, "bola %s");
+    sb_error_t *error = sb_error_new_from_type(NULL, NULL);
     assert_non_null(error);
-    assert_int_equal(error->code, -1);
-    assert_string_equal(error->msg, "bola %s");
+    assert_null(sb_error_get_data(error));
+    assert_null(sb_error_get_type_name(error));
+    assert_null(sb_error_to_string(error));
     sb_error_free(error);
-}
 
+    error = sb_error_new_from_type(&my_error, NULL);
+    assert_non_null(error);
+    assert_null(sb_error_get_data(error));
+    assert_string_equal(sb_error_get_type_name(error), "my_error");
+    assert_string_equal(sb_error_to_string(error), "");
+    sb_error_free(error);
 
-static void
-test_error_new_printf(void **state)
-{
-    sb_error_t *error = sb_error_new_printf(2, "bola %s", "guda");
+    error = sb_error_new_from_type(NULL, "asd");
     assert_non_null(error);
-    assert_int_equal(error->code, 2);
-    assert_string_equal(error->msg, "bola guda");
-    sb_error_free(error);
-}
-
-
-static void
-test_error_new_printf_internal(void **state)
-{
-    sb_error_t *error = sb_error_new_printf(-2, "bola %s", "guda");
-    assert_non_null(error);
-    assert_int_equal(error->code, -2);
-    assert_string_equal(error->msg, "bola guda");
-    sb_error_free(error);
-}
-
-
-static void
-test_error_new_printf_parser(void **state)
-{
-    const char *a = "bola\nguda\nchunda\n";
-    sb_error_t *error = sb_error_new_printf_parser(1, a, strlen(a), 11, "asd %d", 10);
-    assert_non_null(error);
-    assert_int_equal(error->code, 1);
-    assert_string_equal(error->msg,
-        "asd 10\nError occurred near line 3, position 2: chunda");
-    sb_error_free(error);
-    a = "bola\nguda\nchunda";
-    error = sb_error_new_printf_parser(1, a, strlen(a), 11, "asd %d", 10);
-    assert_non_null(error);
-    assert_int_equal(error->code, 1);
-    assert_string_equal(error->msg,
-        "asd 10\nError occurred near line 3, position 2: chunda");
-    sb_error_free(error);
-    a = "bola\nguda\nchunda";
-    error = sb_error_new_printf_parser(1, a, strlen(a), 0, "asd %d", 10);
-    assert_non_null(error);
-    assert_int_equal(error->code, 1);
-    assert_string_equal(error->msg,
-        "asd 10\nError occurred near line 1, position 1: bola");
-    sb_error_free(error);
-    a = "";
-    error = sb_error_new_printf_parser(1, a, strlen(a), 0, "asd %d", 10);
-    assert_non_null(error);
-    assert_int_equal(error->code, 1);
-    assert_string_equal(error->msg, "asd 10");
-    sb_error_free(error);
-}
-
-
-static void
-test_error_new_printf_parser_crlf(void **state)
-{
-    const char *a = "bola\r\nguda\r\nchunda\r\n";
-    sb_error_t *error = sb_error_new_printf_parser(1, a, strlen(a), 13, "asd %d", 10);
-    assert_non_null(error);
-    assert_int_equal(error->code, 1);
-    assert_string_equal(error->msg,
-        "asd 10\nError occurred near line 3, position 2: chunda");
-    sb_error_free(error);
-    a = "bola\r\nguda\r\nchunda";
-    error = sb_error_new_printf_parser(1, a, strlen(a), 13, "asd %d", 10);
-    assert_non_null(error);
-    assert_int_equal(error->code, 1);
-    assert_string_equal(error->msg,
-        "asd 10\nError occurred near line 3, position 2: chunda");
-    sb_error_free(error);
-    a = "bola\r\nguda\r\nchunda";
-    error = sb_error_new_printf_parser(1, a, strlen(a), 0, "asd %d", 10);
-    assert_non_null(error);
-    assert_int_equal(error->code, 1);
-    assert_string_equal(error->msg,
-        "asd 10\nError occurred near line 1, position 1: bola");
+    assert_string_equal(sb_error_get_data(error), "asd");
+    assert_null(sb_error_get_type_name(error));
+    assert_null(sb_error_to_string(error));
     sb_error_free(error);
 }
 
@@ -124,11 +119,7 @@ main(void)
 {
     const UnitTest tests[] = {
         unit_test(test_error_new),
-        unit_test(test_error_new_internal),
-        unit_test(test_error_new_printf),
-        unit_test(test_error_new_printf_internal),
-        unit_test(test_error_new_printf_parser),
-        unit_test(test_error_new_printf_parser_crlf),
+        unit_test(test_error_new_null),
     };
     return run_tests(tests);
 }

@@ -29,10 +29,6 @@ typedef struct _sb_config_t sb_config_t;
 /**
  * Function that parses INI-style configuration from a string.
  *
- * This function can generate errors with the following codes:
- *
- * - \c SB_ERROR_CONFIGPARSER
- *
  * @param src            String with the content to be parsed.
  * @param src_len        String length.
  * @param list_sections  List of strings with sections that should be parsed
