@@ -41,6 +41,9 @@ sb_strerror_new(const char *msg)
 sb_error_t*
 sb_strerror_new_printf(const char *format, ...)
 {
+    if (format == NULL)
+        return sb_strerror_new(NULL);
+
     va_list ap;
     va_start(ap, format);
     char *tmp = sb_strdup_vprintf(format, ap);

@@ -107,6 +107,9 @@ sb_error_t*
 sb_parser_error_new_printf(const char *src, size_t src_len, size_t pos,
     const char *format, ...)
 {
+    if (format == NULL)
+        return sb_parser_error_new(src, src_len, pos, NULL);
+
     va_list ap;
     va_start(ap, format);
     char *tmp = sb_strdup_vprintf(format, ap);
