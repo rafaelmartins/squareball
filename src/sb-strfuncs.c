@@ -53,6 +53,9 @@ sb_strndup(const char *s, size_t n)
 char*
 sb_strdup_vprintf(const char *format, va_list ap)
 {
+    if (format == NULL)
+        return NULL;
+
     va_list ap2;
     va_copy(ap2, ap);
     int l = vsnprintf(NULL, 0, format, ap2);
@@ -74,6 +77,9 @@ sb_strdup_vprintf(const char *format, va_list ap)
 char*
 sb_strdup_printf(const char *format, ...)
 {
+    if (format == NULL)
+        return NULL;
+
     va_list ap;
     va_start(ap, format);
     char *tmp = sb_strdup_vprintf(format, ap);

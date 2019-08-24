@@ -253,6 +253,9 @@ static void
 test_string_append_printf(void **state)
 {
     sb_string_t *str = sb_string_new();
+    str = sb_string_append_printf(str, NULL);
+    assert_string_equal(str->str, "");
+    assert_non_null(str);
     str = sb_string_append_printf(str, "guda: %s %d", "bola", 1);
     assert_non_null(str);
     assert_string_equal(str->str, "guda: bola 1");

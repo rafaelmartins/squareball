@@ -47,6 +47,7 @@ test_strndup(void **state)
 static void
 test_strdup_printf(void **state)
 {
+    assert_null(sb_strdup_printf(NULL));
     char *str = sb_strdup_printf("bola");
     assert_string_equal(str, "bola");
     free(str);

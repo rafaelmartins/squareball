@@ -113,6 +113,10 @@ sb_string_append_printf(sb_string_t *str, const char *format, ...)
 {
     if (str == NULL)
         return NULL;
+
+    if (format == NULL)
+        return str;
+
     va_list ap;
     va_start(ap, format);
     char *tmp = sb_strdup_vprintf(format, ap);
