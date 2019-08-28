@@ -18,7 +18,7 @@
 #include <signal.h>
 #endif /* HAVE_SIGNAL_H */
 
-#include "compat.h"
+#include <squareball/sb-compat.h>
 
 
 int
