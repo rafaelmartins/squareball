@@ -18,6 +18,7 @@
  * @{
  */
 
+#include <squareball/sb-compat.h>
 #include <squareball/sb-configparser.h>
 #include <squareball/sb-error.h>
 #include <squareball/sb-file.h>
