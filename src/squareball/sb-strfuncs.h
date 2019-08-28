@@ -144,6 +144,17 @@ char* sb_str_replace(const char *str, const char search, const char *replace);
 char* sb_str_find(const char *str, char c);
 
 /**
+ * Function that converts a string to a boolean.
+ *
+ * Supported values for @c true are: "1", "y", "yes", "true" and "on", upper or
+ * lower case. Anything else is @c false.
+ *
+ * @param str  The string.
+ * @return     The boolean representing the string.
+ */
+bool sb_str_to_bool(const char *str);
+
+/**
  * Function that frees the memory allocated for a NULL-terminated array of
  * strings.
  *

@@ -10,6 +10,10 @@
 #include <config.h>
 #endif /* HAVE_CONFIG_H */
 
+#ifdef HAVE_STRINGS_H
+#include <string.h>
+#endif /* HAVE_STRINGS_H */
+
 #include <ctype.h>
 #include <string.h>
 #include <stdarg.h>
@@ -19,6 +23,10 @@
 #include <squareball/sb-mem.h>
 #include <squareball/sb-strfuncs.h>
 #include <squareball/sb-string.h>
+
+#if defined(WIN32) || defined(_WIN32)
+#define strcasecmp _stricmp
+#endif
 
 
 char*
@@ -221,6 +229,31 @@ sb_str_find(const char *str, char c)
         }
     }
     return NULL;
+}
+
+
+bool
+sb_str_to_bool(const char *str)
+{
+    if (str == NULL)
+        return false;
+
+    if (0 == strcmp(str, "1"))
+        return true;
+
+    if (0 == strcasecmp(str, "y"))
+        return true;
+
+    if (0 == strcasecmp(str, "yes"))
+        return true;
+
+    if (0 == strcasecmp(str, "true"))
+        return true;
+
+    if (0 == strcasecmp(str, "on"))
+        return true;
+
+    return false;
 }
 
 
