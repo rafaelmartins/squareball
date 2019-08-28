@@ -602,6 +602,323 @@ test_config_quoted_values(void **state)
 
 
 static void
+test_config_empty_values(void **state)
+{
+    const char *a =
+        "[foo]\n"
+        "asd =";
+    sb_error_t *err = NULL;
+    sb_config_t *c = sb_config_parse(a, strlen(a), NULL, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 1);
+    char **s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 1);
+    assert_string_equal(s[0], "foo");
+    assert_null(s[1]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "");
+    char **k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 1);
+    assert_string_equal(k[0], "asd");
+    assert_null(k[1]);
+    sb_strv_free(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\n"
+        "asd = \n";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), NULL, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 1);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 1);
+    assert_string_equal(s[0], "foo");
+    assert_null(s[1]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "");
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 1);
+    assert_string_equal(k[0], "asd");
+    assert_null(k[1]);
+    sb_strv_free(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\n"
+        "asd = foo\n"
+        "qwe =";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), NULL, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 1);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 1);
+    assert_string_equal(s[0], "foo");
+    assert_null(s[1]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "foo");
+    assert_string_equal(sb_config_get(c, "foo", "qwe"), "");
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 2);
+    assert_string_equal(k[0], "asd");
+    assert_string_equal(k[1], "qwe");
+    assert_null(k[2]);
+    sb_strv_free(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\n"
+        "asd = foo\n"
+        "qwe = \n";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), NULL, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 1);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 1);
+    assert_string_equal(s[0], "foo");
+    assert_null(s[1]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "foo");
+    assert_string_equal(sb_config_get(c, "foo", "qwe"), "");
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 2);
+    assert_string_equal(k[0], "asd");
+    assert_string_equal(k[1], "qwe");
+    assert_null(k[2]);
+    sb_strv_free(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\n"
+        "asd =\n"
+        "qwe = foo";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), NULL, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 1);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 1);
+    assert_string_equal(s[0], "foo");
+    assert_null(s[1]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "");
+    assert_string_equal(sb_config_get(c, "foo", "qwe"), "foo");
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 2);
+    assert_string_equal(k[0], "asd");
+    assert_string_equal(k[1], "qwe");
+    assert_null(k[2]);
+    sb_strv_free(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\n"
+        "asd = \n"
+        "qwe = foo\n";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), NULL, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 1);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 1);
+    assert_string_equal(s[0], "foo");
+    assert_null(s[1]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "");
+    assert_string_equal(sb_config_get(c, "foo", "qwe"), "foo");
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 2);
+    assert_string_equal(k[0], "asd");
+    assert_string_equal(k[1], "qwe");
+    assert_null(k[2]);
+    sb_strv_free(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\r\n"
+        "asd =";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), NULL, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 1);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 1);
+    assert_string_equal(s[0], "foo");
+    assert_null(s[1]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "");
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 1);
+    assert_string_equal(k[0], "asd");
+    assert_null(k[1]);
+    sb_strv_free(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\r\n"
+        "asd = \r\n";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), NULL, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 1);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 1);
+    assert_string_equal(s[0], "foo");
+    assert_null(s[1]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "");
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 1);
+    assert_string_equal(k[0], "asd");
+    assert_null(k[1]);
+    sb_strv_free(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\r\n"
+        "asd = foo\r\n"
+        "qwe =";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), NULL, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 1);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 1);
+    assert_string_equal(s[0], "foo");
+    assert_null(s[1]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "foo");
+    assert_string_equal(sb_config_get(c, "foo", "qwe"), "");
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 2);
+    assert_string_equal(k[0], "asd");
+    assert_string_equal(k[1], "qwe");
+    assert_null(k[2]);
+    sb_strv_free(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\r\n"
+        "asd = foo\r\n"
+        "qwe = \r\n";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), NULL, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 1);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 1);
+    assert_string_equal(s[0], "foo");
+    assert_null(s[1]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "foo");
+    assert_string_equal(sb_config_get(c, "foo", "qwe"), "");
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 2);
+    assert_string_equal(k[0], "asd");
+    assert_string_equal(k[1], "qwe");
+    assert_null(k[2]);
+    sb_strv_free(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\r\n"
+        "asd =\r\n"
+        "qwe = foo";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), NULL, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 1);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 1);
+    assert_string_equal(s[0], "foo");
+    assert_null(s[1]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "");
+    assert_string_equal(sb_config_get(c, "foo", "qwe"), "foo");
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 2);
+    assert_string_equal(k[0], "asd");
+    assert_string_equal(k[1], "qwe");
+    assert_null(k[2]);
+    sb_strv_free(k);
+    sb_config_free(c);
+
+    a =
+        "[foo]\r\n"
+        "asd = \r\n"
+        "qwe = foo\r\n";
+    err = NULL;
+    c = sb_config_parse(a, strlen(a), NULL, &err);
+    assert_null(err);
+    assert_non_null(c);
+    assert_non_null(c->root);
+    assert_int_equal(sb_trie_size(c->root), 1);
+    s = sb_config_list_sections(c);
+    assert_non_null(s);
+    assert_int_equal(sb_strv_length(s), 1);
+    assert_string_equal(s[0], "foo");
+    assert_null(s[1]);
+    sb_strv_free(s);
+    assert_string_equal(sb_config_get(c, "foo", "asd"), "");
+    assert_string_equal(sb_config_get(c, "foo", "qwe"), "foo");
+    k = sb_config_list_keys(c, "foo");
+    assert_non_null(k);
+    assert_int_equal(sb_strv_length(k), 2);
+    assert_string_equal(k[0], "asd");
+    assert_string_equal(k[1], "qwe");
+    assert_null(k[2]);
+    sb_strv_free(k);
+    sb_config_free(c);
+}
+
+
+static void
 test_config_key_prefix(void **state)
 {
     const char *a =
@@ -707,6 +1024,7 @@ main(void)
         unit_test(test_config_section_multiple_sections),
         unit_test(test_config_section_list),
         unit_test(test_config_quoted_values),
+        unit_test(test_config_empty_values),
         unit_test(test_config_key_prefix),
         unit_test(test_config_error_start),
         unit_test(test_config_error_section_with_newline),
