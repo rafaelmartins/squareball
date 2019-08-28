@@ -32,6 +32,7 @@ if BUNDLE_ME
 
 noinst_HEADERS = \
 	src/squareball.h \
+	src/squareball/sb-compat.h \
 	src/squareball/sb-configparser.h \
 	src/squareball/sb-configparser-private.h \
 	src/squareball/sb-error.h \
@@ -60,6 +61,7 @@ include_HEADERS = \
 	$(NULL)
 
 pkginclude_HEADERS = \
+	src/squareball/sb-compat.h \
 	src/squareball/sb-configparser.h \
 	src/squareball/sb-error.h \
 	src/squareball/sb-file.h \
@@ -97,6 +99,7 @@ check_PROGRAMS = \
 
 
 libsquareball_la_SOURCES = \
+	src/sb-compat.c \
 	src/sb-configparser.c \
 	src/sb-error.c \
 	src/sb-file.c \
