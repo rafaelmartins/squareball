@@ -25,6 +25,8 @@
  *
  * The @ref sb_slist_free_full function is an example of usage of these helper
  * functions.
+ *
+ * @param ptr  An dinamically allocated pointer to be free'd.
  */
 typedef void (*sb_free_func_t) (void *ptr);
 
@@ -40,6 +42,7 @@ void* sb_malloc(size_t size);
 /**
  * Safe realloc replacement function. This function validates the output of
  * the libc's realloc call and aborts if needed. See realloc(3) for details.
+ *
  * @param ptr   A pointer to be resized.
  * @param size  New number of bytes allocated after reallocation.
  * @return      A pointer to the reallocated memory.
