@@ -30,6 +30,18 @@ typedef struct _sb_slist_t {
 } sb_slist_t;
 
 /**
+ * Function signature for comparision helpers that are used to sort lists.
+ * A list of strings could use @c strcmp(3) as this function.
+ *
+ * @param a  The first object to be compared.
+ * @param b  The second object to be compared.
+ * @return   Should return @c 0 if objects are equal, less than @c 0 if first
+ *           object is ordered before the second and greater than @c 0 if the
+ *           second object is ordered before the first object.
+ */
+typedef int (*sb_sort_func_t) (const void *a, const void *b);
+
+/**
  * Function that appends a node to the singly-linked list.
  *
  * @param l     The singly-linked list.
@@ -48,6 +60,15 @@ sb_slist_t* sb_slist_append(sb_slist_t *l, void *data);
  * @return      The singly-linked list itself, a pointer to the new start node.
  */
 sb_slist_t* sb_slist_prepend(sb_slist_t *l, void *data);
+
+/**
+ * Function that sorts a singly-linked list.
+ *
+ * @param l    The singly-linked list.
+ * @param cmp  The comparision helper function.
+ * @return     The singly-linked list itself, a pointer to the new start node.
+ */
+sb_slist_t* sb_slist_sort(sb_slist_t *l, sb_sort_func_t cmp);
 
 /**
  * Function that frees all the memory used by the singly-linked list.

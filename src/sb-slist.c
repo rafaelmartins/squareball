@@ -10,6 +10,7 @@
 #include <config.h>
 #endif /* HAVE_CONFIG_H */
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <squareball/sb-mem.h>
 #include <squareball/sb-slist.h>
@@ -40,6 +41,39 @@ sb_slist_prepend(sb_slist_t *l, void *data)
     node->data = data;
     node->next = l;
     l = node;
+    return l;
+}
+
+
+sb_slist_t*
+sb_slist_sort(sb_slist_t *l, sb_sort_func_t cmp)
+{
+    if (l == NULL) {
+        return NULL;
+    }
+
+    bool swapped = false;
+    sb_slist_t *lptr = NULL;
+    sb_slist_t *rptr = NULL;
+
+    do {
+        swapped = false;
+        lptr = l;
+
+        while (lptr->next != rptr) {
+            if (0 < cmp(lptr->data, lptr->next->data)) {
+                void *tmp = lptr->data;
+                lptr->data = lptr->next->data;
+                lptr->next->data = tmp;
+                swapped = true;
+            }
+
+            lptr = lptr->next;
+        }
+
+        rptr = lptr;
+    } while(swapped);
+
     return l;
 }
 

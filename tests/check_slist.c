@@ -12,6 +12,7 @@
 #include <cmocka.h>
 
 #include <stdlib.h>
+#include <string.h>
 
 #include <squareball/sb-slist.h>
 #include <squareball/sb-strfuncs.h>
@@ -50,6 +51,123 @@ test_slist_prepend(void **state)
     assert_non_null(l->next);
     assert_string_equal(l->next->data, "bola");
     assert_null(l->next->next);
+    sb_slist_free_full(l, free);
+}
+
+
+static int
+sort_func(const void *a, const void *b)
+{
+    return strcmp((const char*) a, (const char*) b);
+}
+
+
+static void
+test_slist_sort_empty(void **state)
+{
+    sb_slist_t *l = NULL;
+    assert_null(sb_slist_sort(l, sort_func));
+}
+
+
+static void
+test_slist_sort_single(void **state)
+{
+    sb_slist_t *l = NULL;
+    l = sb_slist_append(l, sb_strdup("a"));
+
+    l = sb_slist_sort(l, sort_func);
+
+    assert_non_null(l);
+    assert_string_equal(l->data, "a");
+    assert_null(l->next);
+
+    sb_slist_free_full(l, free);
+}
+
+
+static void
+test_slist_sort_sorted(void **state)
+{
+    sb_slist_t *l = NULL;
+    l = sb_slist_append(l, sb_strdup("a"));
+    l = sb_slist_append(l, sb_strdup("b"));
+    l = sb_slist_append(l, sb_strdup("c"));
+
+    l = sb_slist_sort(l, sort_func);
+
+    assert_non_null(l);
+    assert_string_equal(l->data, "a");
+    assert_string_equal(l->next->data, "b");
+    assert_string_equal(l->next->next->data, "c");
+    assert_null(l->next->next->next);
+
+    sb_slist_free_full(l, free);
+}
+
+
+static void
+test_slist_sort_reverse(void **state)
+{
+    sb_slist_t *l = NULL;
+    l = sb_slist_append(l, sb_strdup("d"));
+    l = sb_slist_append(l, sb_strdup("c"));
+    l = sb_slist_append(l, sb_strdup("b"));
+    l = sb_slist_append(l, sb_strdup("a"));
+
+    l = sb_slist_sort(l, sort_func);
+
+    assert_non_null(l);
+    assert_string_equal(l->data, "a");
+    assert_string_equal(l->next->data, "b");
+    assert_string_equal(l->next->next->data, "c");
+    assert_string_equal(l->next->next->next->data, "d");
+    assert_null(l->next->next->next->next);
+
+    sb_slist_free_full(l, free);
+}
+
+
+static void
+test_slist_sort_mixed1(void **state)
+{
+    sb_slist_t *l = NULL;
+    l = sb_slist_append(l, sb_strdup("a"));
+    l = sb_slist_append(l, sb_strdup("d"));
+    l = sb_slist_append(l, sb_strdup("c"));
+    l = sb_slist_append(l, sb_strdup("b"));
+
+    l = sb_slist_sort(l, sort_func);
+
+    assert_non_null(l);
+    assert_string_equal(l->data, "a");
+    assert_string_equal(l->next->data, "b");
+    assert_string_equal(l->next->next->data, "c");
+    assert_string_equal(l->next->next->next->data, "d");
+    assert_null(l->next->next->next->next);
+
+    sb_slist_free_full(l, free);
+}
+
+
+static void
+test_slist_sort_mixed2(void **state)
+{
+    sb_slist_t *l = NULL;
+    l = sb_slist_append(l, sb_strdup("c"));
+    l = sb_slist_append(l, sb_strdup("b"));
+    l = sb_slist_append(l, sb_strdup("a"));
+    l = sb_slist_append(l, sb_strdup("d"));
+
+    l = sb_slist_sort(l, sort_func);
+
+    assert_non_null(l);
+    assert_string_equal(l->data, "a");
+    assert_string_equal(l->next->data, "b");
+    assert_string_equal(l->next->next->data, "c");
+    assert_string_equal(l->next->next->next->data, "d");
+    assert_null(l->next->next->next->next);
+
     sb_slist_free_full(l, free);
 }
 
@@ -93,6 +211,12 @@ main(void)
     const UnitTest tests[] = {
         unit_test(test_slist_append),
         unit_test(test_slist_prepend),
+        unit_test(test_slist_sort_empty),
+        unit_test(test_slist_sort_single),
+        unit_test(test_slist_sort_sorted),
+        unit_test(test_slist_sort_reverse),
+        unit_test(test_slist_sort_mixed1),
+        unit_test(test_slist_sort_mixed2),
         unit_test(test_slist_free),
         unit_test(test_slist_length),
     };
