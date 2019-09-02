@@ -13,20 +13,14 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <squareball/sb-error.h>
+#include <squareball/sb-error-private.h>
 #include <squareball/sb-strfuncs.h>
 #include <squareball/sb-strerror.h>
 
 
-static char*
-to_string(void *data)
-{
-    return data;
-}
-
-
 static sb_error_type_t str_error = {
     .name = "string",
-    .to_string_func = to_string,
+    .to_string_func = NULL,
     .free_func = NULL,
 };
 
@@ -34,7 +28,9 @@ static sb_error_type_t str_error = {
 sb_error_t*
 sb_strerror_new(const char *msg)
 {
-    return sb_error_new_from_type(&str_error, sb_strdup(msg));
+    sb_error_t *rv = sb_error_new_from_type(&str_error, sb_strdup(msg));
+    rv->msg = rv->data;
+    return rv;
 }
 
 

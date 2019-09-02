@@ -36,6 +36,7 @@ noinst_HEADERS = \
 	src/squareball/sb-configparser.h \
 	src/squareball/sb-configparser-private.h \
 	src/squareball/sb-error.h \
+	src/squareball/sb-error-private.h \
 	src/squareball/sb-file.h \
 	src/squareball/sb-mem.h \
 	src/squareball/sb-parsererror.h \
@@ -79,6 +80,7 @@ pkginclude_HEADERS = \
 
 noinst_HEADERS = \
 	src/squareball/sb-configparser-private.h \
+	src/squareball/sb-error-private.h \
 	src/squareball/sb-trie-private.h \
 	$(NULL)
 

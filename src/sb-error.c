@@ -15,14 +15,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <squareball/sb-error.h>
+#include <squareball/sb-error-private.h>
 #include <squareball/sb-mem.h>
 #include <squareball/sb-strfuncs.h>
-
-struct _sb_error_t {
-    sb_error_type_t *type;
-    void *data;
-    char *msg;
-};
 
 
 sb_error_t*

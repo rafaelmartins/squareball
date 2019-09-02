@@ -29,6 +29,17 @@ test_strerror_new(void **state)
 
 
 static void
+test_strerror_new_no_string(void **state)
+{
+    sb_error_t *error = sb_strerror_new("bola %s");
+    assert_non_null(error);
+    assert_string_equal(sb_error_get_data(error), "bola %s");
+    assert_string_equal(sb_error_get_type_name(error), "string");
+    sb_error_free(error);
+}
+
+
+static void
 test_strerror_new_null(void **state)
 {
     sb_error_t *error = sb_strerror_new(NULL);
@@ -69,6 +80,7 @@ main(void)
 {
     const UnitTest tests[] = {
         unit_test(test_strerror_new),
+        unit_test(test_strerror_new_no_string),
         unit_test(test_strerror_new_null),
         unit_test(test_strerror_new_printf),
         unit_test(test_strerror_new_printf_null),
