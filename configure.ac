@@ -163,7 +163,7 @@ AS_IF([test "x$enable_examples" = "xyes"], [
 ])
 AM_CONDITIONAL([BUILD_EXAMPLES], [test "x$enable_examples" = "xyes"])
 
-AC_CHECK_HEADERS([sys/types.h sys/stat.h signal.h strings.h])
+AC_CHECK_HEADERS([sys/types.h sys/stat.h sys/wait.h signal.h strings.h])
 
 AC_CONFIG_FILES([
   Makefile
